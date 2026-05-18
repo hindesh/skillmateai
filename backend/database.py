@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+DATABASE_URL = os.environ["DATABASE_URL"].replace("postgres://", "postgresql://", 1)
 
 # Supabase (and most managed Postgres) requires SSL
 connect_args = {}
