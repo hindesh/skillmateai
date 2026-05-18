@@ -19,3 +19,4 @@ out/
 
 # Data (sensitive / large)
 backend/data/test_transcript.txt
+PROJECT_CONTEXT.txt
