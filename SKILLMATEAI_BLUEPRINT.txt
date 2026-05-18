@@ -1,0 +1,364 @@
+================================================================================
+SKILLMATEAI — PROJECT BLUEPRINT
+Gemma 4 Good Hackathon (Google DeepMind / Kaggle)
+Deadline: May 18, 2026
+Prize pool: $200,000 | Target track: Future of Education ($10k) + Main Track
+================================================================================
+
+
+--------------------------------------------------------------------------------
+ELEVATOR PITCH
+--------------------------------------------------------------------------------
+SkillMateAI is an AI-powered EdTech platform where teachers and students have
+live sessions, and Gemma 4 silently acts as a third participant — analysing
+every conversation, scoring the student's understanding, generating targeted
+quiz questions, and tracking progress over time. Students who study alone can
+paste any notes or question and instantly get a personalised practice set.
+
+
+--------------------------------------------------------------------------------
+CORE FEATURES (in priority order)
+--------------------------------------------------------------------------------
+
+1. LIVE TEACHING SESSION (teacher + student text chat)
+   - Teacher creates a session with a topic (e.g. "Newton's Laws")
+   - Teacher invites a student by searching their email
+   - Both see a real-time chat interface (Supabase Realtime)
+   - When the session ends, teacher clicks "Analyse & Generate Quiz"
+   - Gemma 4 reads the full conversation transcript and returns:
+       * understanding_score (0–10)
+       * weak_topics (list of sub-topics student struggled with)
+       * summary (2–3 sentences)
+       * 5 MCQ questions targeting the weak areas
+   - Teacher reviews the 5 questions, approves or rejects each one
+   - Approved questions are released to the student
+
+2. QUIZ ENGINE
+   - Student gets notified when new questions are available
+   - Student takes the quiz (4-option MCQ)
+   - On submission: instant scored result with explanations
+   - Score stored in quiz_attempts table with timestamp and topic
+
+3. PROGRESS DASHBOARD
+   - Line chart of scores over time (grouped by topic)
+   - After 2+ attempts: Gemma 4 writes personalised feedback paragraph
+     (what improved, what still needs work, one concrete study tip)
+   - Teacher can also view any of their student's progress
+
+4. SELF-STUDY MODE (the standout feature)
+   - Student pastes notes, a textbook excerpt, or a specific question
+   - Gemma 4 identifies the topic and generates 5 targeted MCQs instantly
+   - Questions are auto-approved (no teacher needed)
+   - Saved to a personal "question bank"
+   - Student can retake any saved set anytime
+   - All attempts recorded for spaced repetition tracking
+
+
+--------------------------------------------------------------------------------
+GEMMA 4 USAGE (3 distinct calls)
+--------------------------------------------------------------------------------
+
+1. analyse_session(transcript, topic)
+   INPUT:  Full conversation as "[TEACHER]: ... \n[STUDENT]: ..." string
+   OUTPUT: {
+     understanding_score: int (0-10),
+     weak_topics: ["topic1", "topic2"],
+     summary: "Student understood X but struggled with Y...",
+     questions: [
+       {
+         content: "Question text",
+         options: ["A. ...", "B. ...", "C. ...", "D. ..."],
+         correct_answer: "B",
+         explanation: "Because...",
+         topic: "sub-topic",
+         difficulty: "medium"
+       },
+       ... (5 total)
+     ]
+   }
+
+2. generate_self_study_questions(source_text)
+   INPUT:  Raw notes / textbook text / a question the student wants to understand
+   OUTPUT: {
+     topic: "Detected topic name",
+     questions: [ ... 5 MCQs same format as above ... ]
+   }
+
+3. generate_progress_feedback(attempts_list)
+   INPUT:  Last 10 quiz attempts [{date, topic, score, total, percentage}]
+   OUTPUT: Plain text paragraph (3-4 sentences, encouraging, specific)
+
+
+--------------------------------------------------------------------------------
+TECH STACK
+--------------------------------------------------------------------------------
+
+Frontend:   Next.js 15 (App Router) + Tailwind CSS + Recharts
+            Deploy: Vercel
+            Domain: skillmateai.com
+
+Backend:    FastAPI (Python 3.12) + Uvicorn
+            Deploy: Railway (Dockerfile)
+            Domain: api.skillmateai.com
+
+Database:   Supabase (Postgres + Auth + Realtime + RLS)
+
+AI Model:   Gemma 4 via Google AI API
+            SDK: google-generativeai (Python)
+            Model ID: gemma-4-27b-it (verify in Google AI Studio)
+
+Auth:       Supabase Auth (email/password)
+            Two roles: "teacher" and "student"
+
+
+--------------------------------------------------------------------------------
+DATABASE SCHEMA (Supabase / Postgres)
+--------------------------------------------------------------------------------
+
+TABLE: profiles
+  id          uuid  PK  (references auth.users)
+  name        text
+  role        text  CHECK (role IN ('teacher', 'student'))
+  created_at  timestamptz
+
+TABLE: sessions
+  id                  uuid  PK
+  teacher_id          uuid  FK → profiles
+  student_id          uuid  FK → profiles (nullable)
+  topic               text
+  status              text  CHECK IN ('active', 'completed', 'analysed')
+  understanding_score integer (0-10, set after Gemma analysis)
+  weak_topics         text[]
+  transcript          text  (full chat log stored after analysis)
+  created_at          timestamptz
+  ended_at            timestamptz
+
+TABLE: messages
+  id           uuid  PK
+  session_id   uuid  FK → sessions
+  sender_id    uuid  FK → profiles
+  sender_role  text  CHECK IN ('teacher', 'student')
+  content      text
+  created_at   timestamptz
+
+TABLE: questions
+  id                uuid  PK
+  session_id        uuid  FK → sessions (nullable for self-study)
+  self_study_item_id uuid FK → self_study_items (nullable for session)
+  student_id        uuid  FK → profiles
+  content           text
+  options           jsonb  ["A. ...", "B. ...", "C. ...", "D. ..."]
+  correct_answer    text   "A" | "B" | "C" | "D"
+  explanation       text
+  topic             text
+  difficulty        text   'easy' | 'medium' | 'hard'
+  status            text   'pending' | 'approved' | 'rejected'
+  source            text   'session' | 'self_study'
+  created_at        timestamptz
+
+TABLE: quiz_attempts
+  id                uuid  PK
+  student_id        uuid  FK → profiles
+  session_id        uuid  FK → sessions (nullable)
+  self_study_item_id uuid FK → self_study_items (nullable)
+  topic             text
+  questions         jsonb  [array of question IDs]
+  answers           jsonb  {question_id: selected_answer}
+  score             integer
+  total             integer
+  created_at        timestamptz
+
+TABLE: self_study_items
+  id           uuid  PK
+  student_id   uuid  FK → profiles
+  source_text  text
+  topic        text
+  created_at   timestamptz
+
+
+--------------------------------------------------------------------------------
+BACKEND API ROUTES (FastAPI)
+--------------------------------------------------------------------------------
+
+All routes receive user identity via `x-user-id` header (Supabase user UUID).
+
+SESSIONS
+  POST   /sessions                      Create session (teacher only)
+  GET    /sessions                      List my sessions (teacher or student)
+  GET    /sessions/{id}                 Get session detail
+  POST   /sessions/{id}/messages        Send a message
+  GET    /sessions/{id}/messages        Get all messages
+  POST   /sessions/{id}/analyse         Trigger Gemma4 analysis → saves questions
+  PATCH  /sessions/{id}/end             End session
+
+QUESTIONS
+  GET    /questions/session/{sessionId} All questions for a session (teacher)
+  PATCH  /questions/{id}/approve        Approve or reject a question (teacher)
+  GET    /questions/student/assigned    All approved questions for me (student)
+
+QUIZZES
+  POST   /quizzes/submit               Submit answers → returns scored result
+  GET    /quizzes/history              My quiz attempt history
+
+SELF-STUDY
+  POST   /self-study                   Submit notes → Gemma4 → 5 questions saved
+  GET    /self-study                   List my self-study items with questions
+  GET    /self-study/{id}              Single item with its questions
+
+PROGRESS
+  GET    /progress                     My chart data + Gemma4 feedback (student)
+  GET    /progress/teacher/{studentId} Student's progress (teacher view)
+  GET    /progress/profiles/search     Search students by email (teacher)
+
+HEALTH
+  GET    /health                       {"status": "ok", "model": "gemma-4-27b-it"}
+
+
+--------------------------------------------------------------------------------
+FRONTEND PAGES
+--------------------------------------------------------------------------------
+
+/                         Landing page (no auth required)
+/auth                     Sign up (choose teacher/student role) + Sign in
+/dashboard                Role-based: teacher sees sessions + create; student sees sessions
+/session/[id]             Live chat UI with Supabase Realtime + "Analyse" button
+/approve/[sessionId]      Teacher reviews + approves/rejects each Gemma4 question
+/quiz/[id]?source=session  Student takes quiz (MCQ with instant scored result)
+/quiz/[id]?source=self_study  Same quiz UI for self-study questions
+/progress                 Line chart of scores over time + Gemma4 text feedback
+/self-study               Paste notes → generate → question bank → practice
+
+
+--------------------------------------------------------------------------------
+KEY ENV VARIABLES
+--------------------------------------------------------------------------------
+
+Backend (.env):
+  SUPABASE_URL          = https://xxxx.supabase.co
+  SUPABASE_SERVICE_KEY  = eyJ...  (service_role key — never expose to frontend)
+  GOOGLE_API_KEY        = AIza...
+  GEMMA_MODEL           = gemma-4-27b-it
+  FRONTEND_URL          = https://skillmateai.com
+
+Frontend (.env.local):
+  NEXT_PUBLIC_SUPABASE_URL       = https://xxxx.supabase.co
+  NEXT_PUBLIC_SUPABASE_ANON_KEY  = eyJ...  (anon/public key)
+  NEXT_PUBLIC_API_URL            = https://api.skillmateai.com
+
+
+--------------------------------------------------------------------------------
+ARCHITECTURE DIAGRAM
+--------------------------------------------------------------------------------
+
+  Browser (Next.js on Vercel — skillmateai.com)
+      │
+      │  REST API calls with header: x-user-id: <supabase-user-uuid>
+      │  Supabase Realtime (WebSocket) for live chat
+      ▼
+  FastAPI backend (Railway — api.skillmateai.com)
+      │                          │
+      │ google-generativeai SDK  │ supabase-py (service role)
+      ▼                          ▼
+  Gemma 4                    Supabase
+  (Google AI API)            (Postgres + Auth + Realtime)
+
+
+  USER FLOW — TEACHER:
+  Sign up (role=teacher) → Create session → Invite student →
+  Chat in real time → Click "Analyse" → Gemma4 analyses transcript →
+  Review 5 questions → Approve → Student gets notified → View progress
+
+  USER FLOW — STUDENT:
+  Sign up (role=student) → Join session → Chat → Receive quiz →
+  Take quiz → See score → View progress chart + Gemma4 feedback
+
+  USER FLOW — SELF-STUDY:
+  Sign in → /self-study → Paste notes → Click "Generate 5 questions" →
+  Questions saved to bank → Take quiz → Score recorded → Retake later
+
+
+--------------------------------------------------------------------------------
+DEMO SCRIPT (for the 3-min video)
+--------------------------------------------------------------------------------
+
+0:00-0:30  Problem statement: students fall behind silently; teachers can't
+           track who understood what
+0:30-1:00  Teacher creates session "Photosynthesis", invites student
+           Chat: teacher explains, student asks questions
+1:00-1:30  Teacher clicks "Analyse" — show Gemma4 returning understanding score
+           7/10, weak areas: "Light reactions", "ATP synthesis"
+           Show 5 generated questions, teacher approves all
+1:30-2:00  Switch to student view — student takes quiz, gets 60%
+           Progress chart shows the score added
+           Gemma4 writes: "You've improved on the Calvin Cycle but Light
+           reactions still need work. Try drawing the Z-scheme diagram."
+2:00-2:30  Self-study demo: paste a paragraph from a textbook →
+           5 questions generated instantly → student practices
+2:30-3:00  Show the question bank growing over time, closing message:
+           "Every student deserves a teacher who never forgets what they
+           struggled with. SkillMateAI remembers."
+
+
+--------------------------------------------------------------------------------
+KAGGLE WRITEUP OUTLINE (≤1500 words)
+--------------------------------------------------------------------------------
+
+Title: SkillMateAI — Gemma 4 as a Silent Teaching Partner
+
+1. Problem (150 words)
+   Students fall behind in 1-on-1 or small-group sessions because teachers
+   can't objectively track comprehension in real time. No record of what was
+   taught, what was understood, what was missed.
+
+2. Solution (200 words)
+   SkillMateAI adds Gemma 4 as a passive observer of every teaching session.
+   It analyses the conversation, scores understanding, identifies gaps, and
+   generates targeted practice questions — closing the loop automatically.
+
+3. Gemma 4 Usage (400 words)
+   Three distinct Gemma 4 calls, explain each prompt + output format.
+   Justify model choice (27B for quality of MCQ reasoning).
+
+4. Architecture (300 words)
+   Diagram + explanation of FastAPI / Supabase / Next.js stack.
+   Explain RLS policies, Realtime subscriptions, lazy client init.
+
+5. Challenges (200 words)
+   Prompt engineering for consistent JSON output.
+   Handling Node.js 22+ localStorage conflict in Next.js SSR.
+   RLS policy design for teacher-student data isolation.
+
+6. Impact (150 words)
+   Works for any subject, any language (Gemma 4 is multilingual).
+   Offline-capable question bank (no teacher needed for self-study).
+   Could scale to classrooms, tutoring platforms, corporate training.
+
+
+--------------------------------------------------------------------------------
+NOTES FOR REBUILD
+--------------------------------------------------------------------------------
+
+- Use @supabase/ssr package (not @supabase/supabase-js directly) to avoid
+  the localStorage SSR conflict in Next.js. The plain supabase-js client
+  calls localStorage at module-evaluation time which breaks in Node.js 22+
+  when --localstorage-file flag is injected by the dev environment.
+
+- Gemma model name: verify in Google AI Studio before hardcoding.
+  As of May 2026: gemma-4-27b-it (confirm availability on your API key tier).
+
+- CORS: backend must allow both localhost:3000 AND https://skillmateai.com
+
+- Supabase RLS: enable for all tables. Teacher can only see their own sessions.
+  Student can only see sessions where student_id = their UUID.
+  Self-study items are private to the student.
+
+- Realtime: enable on messages and questions tables so chat updates live
+  without polling (ALTER PUBLICATION supabase_realtime ADD TABLE messages).
+
+- For the video: record teacher and student in two browser windows side by side.
+  Show the Gemma4 analysis result (understanding score + weak topics) as the
+  "wow moment". It's the most visual and compelling part.
+
+================================================================================
+END OF BLUEPRINT
+================================================================================

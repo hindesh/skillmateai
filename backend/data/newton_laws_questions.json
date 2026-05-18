@@ -1,0 +1,97 @@
+[
+  {
+    "content": "Newton's First Law of Motion is also known as the Law of what?",
+    "options": ["A. Gravitation", "B. Inertia", "C. Acceleration", "D. Momentum"],
+    "correct_answer": "B",
+    "explanation": "Newton's First Law — an object stays at rest or in uniform motion unless acted on by a net external force — describes the property of inertia.",
+    "topic": "Newton's First Law",
+    "difficulty": "easy"
+  },
+  {
+    "content": "A passenger lurches forward when a bus brakes suddenly. Which law best explains this?",
+    "options": ["A. Newton's Third Law", "B. Law of Gravitation", "C. Newton's First Law", "D. Newton's Second Law"],
+    "correct_answer": "C",
+    "explanation": "Due to inertia (First Law), the passenger's body tends to continue moving forward even though the bus has decelerated.",
+    "topic": "Newton's First Law",
+    "difficulty": "easy"
+  },
+  {
+    "content": "According to Newton's Second Law, if the net force on an object doubles while its mass stays the same, the acceleration will:",
+    "options": ["A. Stay the same", "B. Halve", "C. Double", "D. Quadruple"],
+    "correct_answer": "C",
+    "explanation": "F = ma. If F doubles and m is constant, a must double to keep the equation balanced.",
+    "topic": "Newton's Second Law",
+    "difficulty": "easy"
+  },
+  {
+    "content": "A 10 kg object has a net force of 50 N applied to it. What is its acceleration?",
+    "options": ["A. 500 m/s²", "B. 0.2 m/s²", "C. 5 m/s²", "D. 10 m/s²"],
+    "correct_answer": "C",
+    "explanation": "Using F = ma: a = F / m = 50 / 10 = 5 m/s².",
+    "topic": "Newton's Second Law",
+    "difficulty": "medium"
+  },
+  {
+    "content": "What is the SI unit of force?",
+    "options": ["A. Joule", "B. Newton", "C. Pascal", "D. Watt"],
+    "correct_answer": "B",
+    "explanation": "Force is measured in Newtons (N), where 1 N = 1 kg·m/s².",
+    "topic": "Newton's Second Law",
+    "difficulty": "easy"
+  },
+  {
+    "content": "A rocket expels gas downward and moves upward. This is a direct consequence of:",
+    "options": ["A. Newton's First Law", "B. Law of Gravitation", "C. Conservation of Energy", "D. Newton's Third Law"],
+    "correct_answer": "D",
+    "explanation": "For every action (gas expelled downward) there is an equal and opposite reaction (rocket moves upward) — Newton's Third Law.",
+    "topic": "Newton's Third Law",
+    "difficulty": "easy"
+  },
+  {
+    "content": "When a gun fires a bullet, the gun recoils backward. Which statement correctly applies Newton's Third Law?",
+    "options": [
+      "A. The bullet's force on the gun is greater than the gun's force on the bullet",
+      "B. The gun exerts a forward force on the bullet; the bullet exerts an equal backward force on the gun",
+      "C. The recoil force is smaller because the gun is heavier",
+      "D. No force acts on the gun"
+    ],
+    "correct_answer": "B",
+    "explanation": "Action and reaction forces are always equal in magnitude and opposite in direction, acting on different objects.",
+    "topic": "Newton's Third Law",
+    "difficulty": "medium"
+  },
+  {
+    "content": "Inertia of an object depends on its:",
+    "options": ["A. Velocity", "B. Volume", "C. Mass", "D. Shape"],
+    "correct_answer": "C",
+    "explanation": "Inertia is the resistance to change in motion and is directly proportional to mass — the greater the mass, the greater the inertia.",
+    "topic": "Newton's First Law",
+    "difficulty": "easy"
+  },
+  {
+    "content": "Two equal forces act on two objects. Object A has twice the mass of Object B. Which statement is correct?",
+    "options": [
+      "A. Both objects accelerate equally",
+      "B. Object A accelerates twice as fast as B",
+      "C. Object B accelerates twice as fast as A",
+      "D. Object A accelerates four times as fast as B"
+    ],
+    "correct_answer": "C",
+    "explanation": "a = F/m. Same force, but Object B has half the mass, so it accelerates at twice the rate: aB = F/(m/2) = 2F/m = 2 × aA.",
+    "topic": "Newton's Second Law",
+    "difficulty": "medium"
+  },
+  {
+    "content": "A book rests on a table. The table pushes up on the book with a normal force. The reaction force (Newton's Third Law pair) to this normal force is:",
+    "options": [
+      "A. The weight of the book pulling Earth down",
+      "B. The book pushing down on the table",
+      "C. Friction between the book and table",
+      "D. The weight of the table pushing down"
+    ],
+    "correct_answer": "B",
+    "explanation": "The table pushes the book up (action). The reaction is the book pushing down on the table with equal force. These act on different objects.",
+    "topic": "Newton's Third Law",
+    "difficulty": "medium"
+  }
+]

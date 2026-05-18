@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.env
+*.db
+
+# Node
+node_modules/
+.next/
+out/
+.env.local
+.env.production.local
+
+# OS
+.DS_Store
+*.log
+
+# Data (sensitive / large)
+backend/data/test_transcript.txt
