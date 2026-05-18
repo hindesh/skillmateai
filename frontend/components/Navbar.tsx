@@ -19,8 +19,12 @@ export default function Navbar({ profile }: NavbarProps) {
 
   return (
     <nav className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-      <Link href="/dashboard" className="text-xl font-bold text-indigo-600">
-        SkillMateAI
+      <Link href="/dashboard" className="flex items-center gap-2">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="16" fill="#6B9FE4"/>
+          <polyline points="8,17 13,22 24,10" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className="text-xl font-bold text-gray-900">SkillMate<span className="text-[#6B9FE4]">AI</span></span>
       </Link>
 
       <div className="flex items-center gap-6">
