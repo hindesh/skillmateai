@@ -314,18 +314,18 @@ Frontend role routing:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Brand colors (SelectionAI theme, overrides Tailwind indigo):
-  indigo-50:  #EEF4FB
-  indigo-100: #D9E8F8
-  indigo-200: #B3D1F1
-  indigo-300: #8BBAEB
-  indigo-400: #6B9FE4  ← main brand blue (logo circle color)
-  indigo-500: #5490DC
-  indigo-600: #4A82D4  ← buttons, links
-  indigo-700: #3A6DB8
-  indigo-800: #2D559A
-  indigo-900: #1E3E7B
+  indigo-50:  #F0F5FF
+  indigo-100: #DDEAFF
+  indigo-200: #BBCFFF
+  indigo-300: #90B5FE
+  indigo-400: #70A1FE
+  indigo-500: #5890FE  ← MAIN brand blue (logo circle, "AI" text)
+  indigo-600: #4278F5  ← buttons, links
+  indigo-700: #2E61E8
+  indigo-800: #1E4CCC
+  indigo-900: #1238A8
 
-Logo mark: SVG blue circle (#6B9FE4) with white checkmark polyline
+Logo mark: SVG blue circle (#5890FE) with white checkmark polyline
 Favicon: app/icon.svg (same design)
 Font: Inter (Google Fonts)
 Base: bg-gray-50, text-gray-900, rounded-2xl cards with border-gray-200
