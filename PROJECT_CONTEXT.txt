@@ -1,0 +1,420 @@
+================================================================================
+SKILLMATEAI — COMPLETE PROJECT CONTEXT
+For use by Claude Opus 4.7 in future sessions
+Last updated: 2026-05-19
+================================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. THE IDEA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SkillMateAI is an EdTech platform built for the "Gemma 4 Good" hackathon (deadline
+May 18 2026). The core concept: Gemma 4 AI acts as a silent teaching partner —
+after a live tutoring session between a teacher and student, the teacher uploads
+the session transcript and Gemma 4 automatically generates personalised quiz
+questions based on what was actually taught.
+
+The flow:
+  Teacher creates session → teaches student via Zoom/Meet →
+  uploads transcript (paste / .txt / .srt file) →
+  Gemma 4 analyses transcript and generates 5 MCQ questions →
+  student takes quiz → AI tracks progress and gives feedback
+
+Key differentiator: questions are generated FROM the actual lesson content,
+not from a generic topic. A Newton's Laws session generates questions about
+the specific examples the teacher used, not a generic physics quiz.
+
+Target users:
+  - Private tutors (K-12, college)
+  - Students who need structured post-session review
+  - Grade levels: Elementary through College
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Backend:
+  - Python 3.13 + FastAPI (async REST API)
+  - SQLAlchemy ORM (synchronous sessions)
+  - psycopg2 (PostgreSQL driver)
+  - PyJWT + bcrypt (auth, no passlib)
+  - google-generativeai SDK (Gemma 4 via Google AI Studio API)
+  - python-dotenv
+
+Frontend:
+  - Next.js 15.5.18 (App Router, 'use client' components)
+  - React 19
+  - TypeScript
+  - Tailwind CSS 3 with custom SelectionAI brand palette
+  - Recharts (progress charts)
+  - No external auth library — JWT stored in localStorage, decoded client-side
+
+AI:
+  - Model: gemma-4-26b-a4b-it (Gemma 4 MoE, 26B total / ~4B active params)
+  - Provider: Google AI Studio API (GOOGLE_API_KEY)
+  - response_mime_type="application/json" used to suppress chain-of-thought
+  - _extract_json() scans response in reverse for last valid JSON block
+    (Gemma 4 sometimes outputs thinking bullet points before the JSON)
+
+Database:
+  - PostgreSQL on Supabase
+  - Project ref: krgchdhnopatyvhjnqys
+  - Region: ap-south-1 (Mumbai)
+  - Connected via Transaction Pooler (port 6543, IPv4) to avoid IPv6 issues
+    on Render free tier
+
+Deployment:
+  - Frontend: Vercel (https://skillmateai-ashy.vercel.app)
+    Root directory set to "frontend/" in Vercel dashboard
+  - Backend: Render free tier (https://skillmateai.onrender.com)
+    Deployed via Docker (Dockerfile in backend/)
+    Note: free tier sleeps after 15 min idle, ~30s cold start
+  - Repo: https://github.com/hindesh/skillmateai (public)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. REPOSITORY STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/Volumes/CHITTU/skillmateai/
+├── backend/
+│   ├── main.py                    # FastAPI app, CORS (allow_origins=["*"])
+│   ├── database.py                # SQLAlchemy engine, Supabase SSL, postgres:// fix
+│   ├── models.py                  # ORM models (see section 5)
+│   ├── auth_utils.py              # JWT create/decode, get_current_user, bcrypt
+│   ├── requirements.txt
+│   ├── Dockerfile                 # python:3.13-slim, uvicorn, PORT=8080
+│   ├── railway.toml               # kept but not used (Render chosen instead)
+│   ├── .env                       # gitignored — local dev secrets
+│   ├── cloudrun-env.yaml          # gitignored — GCP Cloud Run attempt (billing failed)
+│   ├── routers/
+│   │   ├── auth_router.py         # POST /auth/signup, /auth/signin
+│   │   ├── sessions.py            # CRUD + /generate + /generate-from-transcript
+│   │   ├── questions.py           # Question CRUD
+│   │   ├── quizzes.py             # POST /quizzes, GET /quizzes/{id}
+│   │   ├── progress.py            # GET /progress (student quiz history + AI feedback)
+│   │   ├── teachers.py            # Teacher discovery, setup, requests, approvals
+│   │   └── self_study.py          # Self-study session flow
+│   ├── services/
+│   │   ├── gemma.py               # Google AI Studio integration (primary AI service)
+│   │   └── local_llm.py           # Ollama/gemma3:1b (local dev only, superseded)
+│   └── data/
+│       ├── newton_laws_questions.json   # Static fallback question bank
+│       └── test_transcript.txt          # gitignored — local test transcript
+├── frontend/
+│   ├── app/
+│   │   ├── layout.tsx             # Root layout, Inter font, favicon
+│   │   ├── page.tsx               # Landing / redirect to /auth
+│   │   ├── icon.svg               # Favicon: blue circle + white checkmark
+│   │   ├── globals.css
+│   │   ├── auth/page.tsx          # Sign in / Sign up (tabs), grade level selector
+│   │   ├── dashboard/page.tsx     # Teacher dashboard OR student dashboard (role-split)
+│   │   ├── session/[id]/page.tsx  # Session detail: transcript upload, generate questions
+│   │   ├── quiz/[id]/page.tsx     # MCQ quiz interface
+│   │   ├── progress/page.tsx      # Student progress: charts + AI feedback
+│   │   ├── setup/page.tsx         # Teacher profile setup (bio, expertise, price)
+│   │   ├── teachers/[id]/page.tsx # Teacher public profile + request session
+│   │   ├── approve/[sessionId]/page.tsx  # Teacher approves/rejects student request
+│   │   └── self-study/page.tsx    # Self-study mode
+│   ├── components/
+│   │   └── Navbar.tsx             # Brand logo (SVG checkmark), nav links, sign out
+│   ├── hooks/
+│   │   └── useUser.ts             # useUser() hook — reads JWT from localStorage
+│   ├── lib/
+│   │   ├── api.ts                 # apiFetch() wrapper, NEXT_PUBLIC_API_URL
+│   │   └── auth.ts                # getToken/setToken/clearToken, getProfile, decodeToken
+│   ├── tailwind.config.ts         # Custom indigo palette = SelectionAI brand blues
+│   ├── package.json               # next 15.5.18, react 19, recharts
+│   └── vercel.json                # { "framework": "nextjs" } only
+├── .gitignore
+└── PROJECT_CONTEXT.txt            # This file
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. DATABASE SCHEMA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Table: profiles
+  id              String PK (UUID)
+  email           String UNIQUE
+  password_hash   String
+  name            String
+  role            String  -- "teacher" | "student"
+  grade_level     String?  -- students only, e.g. "Grade 10", "College Freshman"
+  bio             Text?
+  expertise       JSON?   -- ["Physics", "Mathematics"]
+  youtube_samples JSON?   -- [{"title": "...", "url": "..."}]
+  price_per_hour  Float?
+  max_students    Int?
+  is_public       Boolean default False
+  created_at      DateTime(tz)
+
+Table: teacher_requests
+  id          String PK
+  student_id  FK → profiles.id
+  teacher_id  FK → profiles.id
+  topic       String
+  message     Text?
+  status      String  -- "pending" | "accepted" | "rejected"
+  created_at  DateTime(tz)
+
+Table: enrollments
+  id          String PK
+  student_id  FK → profiles.id
+  teacher_id  FK → profiles.id
+  request_id  FK → teacher_requests.id?
+  created_at  DateTime(tz)
+
+Table: sessions
+  id               String PK
+  teacher_id       FK → profiles.id
+  student_id       FK → profiles.id?
+  enrollment_id    FK → enrollments.id?
+  topic            String
+  status           String  -- "scheduled" | "completed" | "analysed"
+  scheduled_at     DateTime(tz)?
+  recording_link   String?
+  transcript       Text?
+  session_notes    Text?
+  understanding_score  Int?
+  weak_topics      JSON?
+  created_at       DateTime(tz)
+  ended_at         DateTime(tz)?
+
+Table: questions
+  id              String PK
+  session_id      FK → sessions.id?
+  student_id      FK → profiles.id?
+  content         Text
+  options         JSON  -- ["A) ...", "B) ...", "C) ...", "D) ..."]
+  correct_answer  String  -- must match one option exactly
+  explanation     Text
+  topic           String
+  difficulty      String  -- "easy" | "medium" | "hard"
+  status          String default "approved"
+  source          String default "session"  -- "session" | "transcript" | "self_study"
+  created_at      DateTime(tz)
+
+Table: quiz_attempts
+  id          String PK
+  student_id  FK → profiles.id
+  session_id  FK → sessions.id?
+  topic       String
+  questions   JSON  -- [question_id, ...]
+  answers     JSON  -- {question_id: "A) ..."}
+  score       Int
+  total       Int
+  created_at  DateTime(tz)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. API ENDPOINTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Auth (no token required):
+  POST /auth/signup     { name, email, password, role, grade_level? }
+  POST /auth/signin     { email, password }
+  GET  /health          → { status, version, ai_model }
+
+Sessions (Bearer token required):
+  GET    /sessions                          List sessions for current user
+  POST   /sessions                          Create session (teacher only)
+  GET    /sessions/{id}                     Get session detail
+  PATCH  /sessions/{id}                     Update transcript/notes/recording (teacher)
+  PATCH  /sessions/{id}/complete            Mark session complete (teacher)
+  POST   /sessions/{id}/generate            Assign static sample questions (teacher)
+  POST   /sessions/{id}/generate-from-transcript  AI generates questions from transcript
+
+Questions:
+  GET    /questions                         List questions for current user
+  GET    /questions/{id}
+  PATCH  /questions/{id}/approve            Teacher approves a question
+  DELETE /questions/{id}
+
+Quizzes:
+  POST   /quizzes                           Submit quiz answers
+  GET    /quizzes/{id}                      Get quiz attempt result
+
+Progress:
+  GET    /progress                          Student quiz history + AI feedback text
+
+Teachers:
+  GET    /teachers                          List public teacher profiles
+  GET    /teachers/{id}                     Get teacher profile
+  POST   /teachers/setup                    Teacher sets up profile (bio, expertise, etc.)
+  POST   /teachers/{id}/request            Student requests session with teacher
+  GET    /teachers/requests                 Teacher sees pending requests
+  POST   /approve/{session_id}              Teacher approves/rejects request
+
+Self-study:
+  POST   /self-study/start                  Student starts self-study session
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. AI INTEGRATION DETAILS (backend/services/gemma.py)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Model: gemma-4-26b-a4b-it via google-generativeai SDK
+Config: temperature=0.2, response_mime_type="application/json"
+
+Three functions:
+
+1. generate_questions_from_transcript(transcript, topic)
+   → Returns list of 5 dicts, each with:
+     content, options[4], correct_answer, explanation, topic, difficulty
+   → Used by POST /sessions/{id}/generate-from-transcript
+   → Teacher pastes/uploads transcript in UI → questions saved to DB → student quizzes
+
+2. analyse_session(transcript, topic)
+   → Returns { understanding_score(0-10), weak_topics[], summary, questions[5] }
+   → Used internally for full session analysis
+
+3. generate_progress_feedback(attempts)
+   → Returns 3-4 sentence plain-text feedback string
+   → Called by GET /progress to give student encouragement + study tips
+
+Critical implementation note — _extract_json():
+  Gemma 4 outputs chain-of-thought reasoning before the actual JSON.
+  response_mime_type="application/json" suppresses this in most cases,
+  but not always. The fallback scans ALL positions of "[" and "{" in
+  REVERSE ORDER and tries json.loads() at each — the last valid JSON
+  block is the actual answer (not the thinking). rfind() alone is wrong
+  because it finds inner brackets like "options": [ rather than the
+  outer array start.
+
+Transcript input formats supported (client-side):
+  - Plain text paste into textarea
+  - .txt file upload (read as-is)
+  - .srt file upload (parseSrt() strips sequence numbers and timecodes)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. AUTH IMPLEMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- JWT (HS256, 30-day expiry) stored in localStorage (key: "token")
+- Payload: { sub: user_id, name, email, role, grade_level, exp }
+- All protected endpoints use: Authorization: Bearer <token>
+- get_current_user() dependency in auth_utils.py: decodes token → queries Profile
+- SECRET_KEY must be set as env var — raises RuntimeError if missing (no insecure fallback)
+- getProfile() in frontend/lib/auth.ts calls clearToken() if token decode fails
+  (prevents redirect loop from corrupted token)
+
+Frontend role routing:
+  - /dashboard shows teacher dashboard if role="teacher", student dashboard if role="student"
+  - /quiz/[id] — student only
+  - /setup — teacher only
+  - /session/[id] — both roles, teacher sees edit controls, student sees read-only
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. UI / DESIGN SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Brand colors (SelectionAI theme, overrides Tailwind indigo):
+  indigo-50:  #EEF4FB
+  indigo-100: #D9E8F8
+  indigo-200: #B3D1F1
+  indigo-300: #8BBAEB
+  indigo-400: #6B9FE4  ← main brand blue (logo circle color)
+  indigo-500: #5490DC
+  indigo-600: #4A82D4  ← buttons, links
+  indigo-700: #3A6DB8
+  indigo-800: #2D559A
+  indigo-900: #1E3E7B
+
+Logo mark: SVG blue circle (#6B9FE4) with white checkmark polyline
+Favicon: app/icon.svg (same design)
+Font: Inter (Google Fonts)
+Base: bg-gray-50, text-gray-900, rounded-2xl cards with border-gray-200
+
+Navbar branding:
+  <svg circle+checkmark> SkillMate<span blue>AI</span>
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. ENVIRONMENT VARIABLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Backend (Render environment):
+  DATABASE_URL   postgresql://postgres.krgchdhnopatyvhjnqys:<pw>@aws-1-ap-south-1.pooler.supabase.com:6543/postgres
+  SECRET_KEY     7c7117c645edeb708b9478e38dd6ad985bbbd094a6dd138e6900da5c2433d457
+  GOOGLE_API_KEY AIzaSyDb1LgMX_OZx2O71r_8OQ3OCd509-HBnkg
+  GEMMA_MODEL    gemma-4-26b-a4b-it
+  FRONTEND_URL   https://skillmateai-ashy.vercel.app
+
+Frontend (Vercel environment):
+  NEXT_PUBLIC_API_URL  https://skillmateai.onrender.com
+
+Local dev backend (.env, gitignored):
+  DATABASE_URL   postgresql://localhost/skillmateai
+  GOOGLE_API_KEY AIzaSyDb1LgMX_OZx2O71r_8OQ3OCd509-HBnkg
+  GEMMA_MODEL    gemma-4-26b-a4b-it
+  SECRET_KEY     change-this-to-a-random-secret
+  FRONTEND_URL   http://localhost:3000
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. KEY BUGS FIXED AND WHY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Dashboard blank page (two causes):
+   a) Corrupted JWT in localStorage → getProfile() returned null → middleware
+      redirected to /auth → middleware saw token → bounced back to /dashboard.
+      Fix: call clearToken() in getProfile() whenever decode fails.
+   b) null profile fell through to teacher dashboard code.
+      Fix: explicit "if (!profile) return null" guard before role check.
+
+2. Gemma 4 JSON parsing:
+   - rfind("[") found inner brackets (e.g. inside "options": []) not the outer array.
+   - Fix: scan ALL "[" and "{" positions in reverse, try json.loads() at each.
+
+3. Supabase "@" in password URL-encoded:
+   - "postgresql://postgres:@Chittu2026@..." is ambiguous.
+   - Fix: encode "@" as "%40" in the connection string.
+
+4. SQLAlchemy "postgres://" dialect:
+   - SQLAlchemy 1.4+ dropped "postgres://" scheme (only "postgresql://").
+   - Render/Heroku-style DATABASE_URL uses "postgres://".
+   - Fix: DATABASE_URL.replace("postgres://", "postgresql://", 1) in database.py.
+
+5. Render IPv6 → Supabase connection refused:
+   - Render free tier connects via IPv6; Supabase direct host resolves to IPv6.
+   - Fix: use Supabase Transaction Pooler (port 6543, IPv4 only).
+
+6. CORS "Disallowed CORS origin" on OPTIONS returning 400:
+   - Starlette CORSMiddleware passes preflight to router if origin not in allowlist.
+   - Router returned 400, browser blocked request with no CORS headers.
+   - Fix for hackathon: allow_origins=["*"] (no allow_credentials needed since
+     auth uses Authorization header, not cookies).
+
+7. vercel.json rootDirectory:
+   - "rootDirectory" is a Vercel dashboard setting, not a vercel.json field.
+   - Having it in vercel.json caused "Invalid request" deployment error.
+   - Fix: set Root Directory to "frontend" in Vercel dashboard; remove from JSON.
+
+8. Next.js security vulnerability:
+   - 15.3.1 flagged as vulnerable by Vercel build.
+   - Fix: upgraded to 15.5.18 (latest patch in 15.x line).
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11. KNOWN LIMITATIONS / FUTURE WORK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Render free tier: 30s cold start after 15 min idle. Upgrade to paid for production.
+- No real-time video/transcription: placeholder UI, users use Zoom/Meet externally.
+- CORS is wide open (allow_origins=["*"]) — tighten to specific origins post-hackathon.
+- No email verification on signup.
+- No password reset flow.
+- JWT in localStorage (XSS risk) — move to httpOnly cookies for production.
+- Payment/booking is UI-only placeholder — no actual Stripe integration.
+- Self-study flow exists in backend but UI is minimal.
+- Teacher approval flow: student requests → teacher approves → enrollment created.
+  The approve/[sessionId] page handles this.
+
+================================================================================
+END OF PROJECT CONTEXT
+================================================================================
