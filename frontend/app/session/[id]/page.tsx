@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useUser } from '@/hooks/useUser'
@@ -37,6 +37,37 @@ export default function SessionPage() {
   const [saving, setSaving] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [generated, setGenerated] = useState<{ questions_generated: number } | null>(null)
+  const [uploadedFileName, setUploadedFileName] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const parseSrt = (raw: string): string => {
+    return raw
+      .split(/\r?\n/)
+      .filter(line => {
+        if (/^\d+$/.test(line.trim())) return false          // sequence numbers
+        if (/\d{2}:\d{2}:\d{2}[,\.]\d{3}\s*-->/.test(line)) return false  // timecodes
+        return true
+      })
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
+  }
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const isSrt = file.name.toLowerCase().endsWith('.srt')
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const raw = ev.target?.result as string
+      const text = isSrt ? parseSrt(raw) : raw.trim()
+      setTranscript(text)
+      setUploadedFileName(file.name)
+    }
+    reader.readAsText(file)
+    // Reset so the same file can be re-uploaded if needed
+    e.target.value = ''
+  }
 
   useEffect(() => {
     if (!loading && !profile) router.push('/auth')
@@ -206,22 +237,52 @@ export default function SessionPage() {
             <div>
               <h2 className="font-semibold text-gray-900">Session Transcript</h2>
               <p className="text-xs text-gray-500 mt-0.5">
-                {isTeacher ? 'Paste the call transcript — Gemma 4 will analyse it to generate questions' : 'Transcript uploaded by your teacher'}
+                {isTeacher ? 'Paste or upload a transcript — Gemma 4 will analyse it and generate quiz questions' : 'Transcript uploaded by your teacher'}
               </p>
             </div>
             {isTeacher && (
-              <button onClick={saveSession} disabled={saving} className="text-xs border border-gray-300 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-50">
-                {saving ? 'Saving...' : 'Save'}
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".txt,.srt"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-xs border border-indigo-300 text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 flex items-center gap-1.5"
+                >
+                  📎 Upload .txt / .srt
+                </button>
+                <button onClick={saveSession} disabled={saving} className="text-xs border border-gray-300 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+                  {saving ? 'Saving...' : 'Save'}
+                </button>
+              </div>
             )}
           </div>
+
+          {uploadedFileName && (
+            <div className="flex items-center gap-2 mb-3 text-xs text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
+              <span>📄</span>
+              <span className="font-medium">{uploadedFileName}</span>
+              <span className="text-indigo-400">— loaded into transcript</span>
+              <button
+                onClick={() => { setUploadedFileName(''); setTranscript('') }}
+                className="ml-auto text-indigo-400 hover:text-red-500"
+              >✕</button>
+            </div>
+          )}
+
           <textarea
             value={transcript}
-            onChange={e => setTranscript(e.target.value)}
+            onChange={e => { setTranscript(e.target.value); if (uploadedFileName) setUploadedFileName('') }}
             disabled={!isTeacher}
             rows={8}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50 resize-none font-mono"
-            placeholder={isTeacher ? "Paste transcript here…\n\nTeacher: Today we'll cover Newton's Laws of Motion...\nStudent: What is the first law?" : 'No transcript uploaded yet'}
+            placeholder={isTeacher ? "Paste transcript here, or upload a .txt / .srt file above…" : 'No transcript uploaded yet'}
           />
         </div>
 
@@ -270,7 +331,7 @@ export default function SessionPage() {
                     {generating ? (
                       <><span className="animate-spin">⟳</span> Gemma is thinking...</>
                     ) : (
-                      <>🤖 Generate with Local Gemma AI</>
+                      <>✨ Generate with Gemma 4 AI</>
                     )}
                   </button>
                   <button
@@ -281,7 +342,7 @@ export default function SessionPage() {
                     📋 Use Sample Questions
                   </button>
                 </div>
-                <p className="text-xs text-indigo-500 mt-2">Local AI uses Gemma 3 1B running on your machine via Ollama — no internet needed.</p>
+                <p className="text-xs text-indigo-500 mt-2">Powered by Gemma 4 (gemma-4-26b-a4b-it) via Google AI Studio API.</p>
               </div>
             </div>
           </div>
@@ -299,7 +360,7 @@ export default function SessionPage() {
                   disabled={generating || !transcript.trim()}
                   className="text-sm border border-green-400 text-green-700 px-4 py-1.5 rounded-lg hover:bg-green-100 disabled:opacity-50"
                 >
-                  {generating ? '⟳ Thinking...' : '🤖 Regenerate with Gemma'}
+                  {generating ? '⟳ Thinking...' : '✨ Regenerate with Gemma 4'}
                 </button>
                 <button
                   onClick={generateQuestions}
