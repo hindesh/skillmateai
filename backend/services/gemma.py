@@ -19,42 +19,39 @@ def _get_model(json_output: bool = True):
 
 
 def _extract_json(text: str) -> dict | list:
-    text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
+    clean = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
+    # Try the whole text first (works when response_mime_type suppresses thinking)
     try:
-        return json.loads(text)
+        return json.loads(clean)
     except json.JSONDecodeError:
         pass
-    match = re.search(r"[\[{][\s\S]*[\]}]", text)
-    if match:
-        try:
-            return json.loads(match.group())
-        except json.JSONDecodeError:
-            pass
+    # Gemma 4 thinks out loud then outputs the real JSON at the end.
+    # Try every position of [ or { in REVERSE order — the last outer block wins.
+    for char in ("[", "{"):
+        positions = [i for i, c in enumerate(clean) if c == char]
+        for idx in reversed(positions):
+            try:
+                parsed = json.loads(clean[idx:])
+                # Only accept arrays or dicts, not bare scalars
+                if isinstance(parsed, (list, dict)):
+                    return parsed
+            except json.JSONDecodeError:
+                continue
     raise ValueError(f"Could not parse JSON from model response: {text[:400]}")
 
 
 def generate_questions_from_transcript(transcript: str, topic: str = "the session") -> list[dict]:
     """Generate 5 MCQ questions from a session transcript using the AI model."""
-    example = json.dumps([{
-        "content": "Which is the standard form of a quadratic equation?",
-        "options": ["A) ax+b=0", "B) ax²+bx+c=0", "C) ax³+bx²=0", "D) ax²=0"],
-        "correct_answer": "B) ax²+bx+c=0",
-        "explanation": "The standard form is ax²+bx+c=0 where a≠0.",
-        "topic": "Standard Form",
-        "difficulty": "medium"
-    }])
-
     prompt = (
-        f"You are an expert educational quiz creator. Read the following teaching session transcript "
-        f"on the topic '{topic}' and generate exactly 5 multiple-choice questions that test the student's "
-        f"understanding of the key concepts covered.\n\n"
-        f"Return ONLY a JSON array (no wrapping object). Each element must match this structure:\n{example}\n\n"
-        f"Rules:\n"
-        f"- correct_answer must exactly match one of the options strings\n"
-        f"- options must have exactly 4 items, each starting with A) B) C) or D)\n"
-        f"- difficulty: easy | medium | hard\n"
-        f"- Generate exactly 5 questions on different aspects of the transcript\n\n"
-        f"TRANSCRIPT:\n{transcript}"
+        f'Read this teaching session transcript and output a JSON array of 5 quiz questions. '
+        f'Output only the JSON array, no other text.\n\n'
+        f'Each item in the array must have exactly these fields:\n'
+        f'"content" (the question), "options" (array of 4 strings starting with "A) " "B) " "C) " "D) "), '
+        f'"correct_answer" (must equal one of the options exactly), '
+        f'"explanation" (one sentence), "topic" (short string), "difficulty" ("easy" or "medium" or "hard").\n\n'
+        f'Example of one item:\n'
+        f'{{"content":"What does F=ma mean?","options":["A) Force equals mass times acceleration","B) Friction equals mass times area","C) Force equals motion times angle","D) Frequency equals mass times amplitude"],"correct_answer":"A) Force equals mass times acceleration","explanation":"Newton\'s second law defines force as the product of mass and acceleration.","topic":"Newton Second Law","difficulty":"easy"}}\n\n'
+        f'Transcript:\n{transcript}\n\nJSON array:'
     )
 
     response = _get_model(json_output=True).generate_content(prompt)
