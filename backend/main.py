@@ -13,15 +13,9 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="SkillMateAI API", version="2.0.0")
 
-# Accept all configured frontend origins
-raw_origins = os.getenv("FRONTEND_URL", "http://localhost:3000")
-allowed_origins = [o.strip() for o in raw_origins.split(",")]
-allowed_origins += ["http://localhost:3000", "http://localhost:3001"]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
