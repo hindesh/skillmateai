@@ -57,7 +57,7 @@ export default function LandingPage() {
               <span className="absolute inset-0 rounded-full bg-indigo-500 animate-ping opacity-60" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600" />
             </span>
-            Powered by Gemma 4 · Built for Gemma 4 Good Hackathon
+            Powered by Gemma 4
           </div>
 
           <h1 className="display-xl text-slate-900 mb-7">

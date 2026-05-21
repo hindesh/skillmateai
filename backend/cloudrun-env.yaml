@@ -1,0 +1,5 @@
+DATABASE_URL: "postgresql://postgres:%40Chittu2026@db.krgchdhnopatyvhjnqys.supabase.co:5432/postgres"
+SECRET_KEY: "7c7117c645edeb708b9478e38dd6ad985bbbd094a6dd138e6900da5c2433d457"
+GOOGLE_API_KEY: "AIzaSyDb1LgMX_OZx2O71r_8OQ3OCd509-HBnkg"
+GEMMA_MODEL: "gemma-4-26b-a4b-it"
+FRONTEND_URL: "https://skillmateai.vercel.app"

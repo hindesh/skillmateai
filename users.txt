@@ -1,0 +1,31 @@
+Teachers:
+
+Name, Email, Password, Subjects, Intro Video Link
+
+Mr. Aryan Sharma, [aryan.sharma@skillmateai.demo](mailto:aryan.sharma@skillmateai.demo), @Aryan123, Physics (CBSE Class 11–12), https://youtu.be/o38_cv0yG7c
+
+Mrs. Neha Verma, [neha.verma@skillmateai.demo](mailto:neha.verma@skillmateai.demo), @Neha123, Chemistry (ICSE & CBSE), https://youtu.be/3y32W9oVbVI
+
+Mr. Rohan Iyer, [rohan.iyer@skillmateai.demo](mailto:rohan.iyer@skillmateai.demo), @Rohan123, Mathematics (JEE Foundation), https://youtube.com/watch?v=mathclass3
+
+Ms. Emily Carter, [emily.carter@skillmateai.demo](mailto:emily.carter@skillmateai.demo), @Emily123, Middle School Science (US K-12), https://youtube.com/watch?v=sciencedemo4
+
+Mr. Daniel Lee, [daniel.lee@skillmateai.demo](mailto:daniel.lee@skillmateai.demo), @Daniel123, SAT Math & Physics, https://youtube.com/watch?v=satmath5
+
+Students:
+
+Name, Email, Password, Grade, Interests
+
+Aarav Gupta, [aarav.gupta@skillmateai.demo](mailto:aarav.gupta@skillmateai.demo), @Aarav123, Grade 10 (CBSE), Physics & Robotics
+
+Ananya Singh, [ananya.singh@skillmateai.demo](mailto:ananya.singh@skillmateai.demo), @Ananya123, Grade 9 (ICSE), Chemistry & Biology
+
+Vivaan Mehta, [vivaan.mehta@skillmateai.demo](mailto:vivaan.mehta@skillmateai.demo), @Vivaan123, Grade 11, JEE Preparation
+
+Sarah Johnson, [sarah.johnson@skillmateai.demo](mailto:sarah.johnson@skillmateai.demo), @Sarah123, Grade 8 (US K-12), General Science
+
+Ethan Walker, [ethan.walker@skillmateai.demo](mailto:ethan.walker@skillmateai.demo), @Ethan123, Grade 12, SAT Preparation
+
+
+
+

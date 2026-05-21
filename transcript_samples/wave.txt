@@ -1,0 +1,65 @@
+Teacher: Good evening! Today we are going to study Wave Optics, which deals with the wave nature of light.
+
+Student: Sir, how is wave optics different from ray optics?
+
+Teacher: In ray optics, light is treated as straight-line rays. Wave optics explains phenomena that occur because light behaves like a wave, such as interference, diffraction, and polarization.
+
+Student: What exactly is interference?
+
+Teacher: Interference is the phenomenon that occurs when two light waves overlap and combine with each other.
+
+Student: What happens when they combine?
+
+Teacher: If the waves combine in phase, the intensity increases and a bright fringe is formed. This is called constructive interference.
+
+Teacher: The condition for constructive interference is:
+
+\Delta x = n\lambda
+
+Student: And what about dark fringes?
+
+Teacher: Dark fringes are formed due to destructive interference, when the waves cancel each other.
+
+Teacher: The condition for destructive interference is:
+
+\Delta x = \left(n+\frac{1}{2}\right)\lambda
+
+Student: What do these symbols represent?
+
+Teacher: Here, ( \Delta x ) represents path difference, ( \lambda ) is the wavelength, and ( n ) is an integer.
+
+Student: Is this related to Young’s Double Slit Experiment?
+
+Teacher: Exactly. In Young’s Double Slit Experiment, coherent light passing through two slits forms alternating bright and dark fringes on a screen.
+
+Student: Why do we need coherent sources?
+
+Teacher: Coherent sources maintain a constant phase difference, which is necessary to produce a stable interference pattern.
+
+Student: Understood. What is diffraction then?
+
+Teacher: Diffraction is the bending of light waves around edges or through narrow openings.
+
+Student: Does diffraction increase with wavelength?
+
+Teacher: Yes. Greater wavelength leads to more noticeable diffraction effects.
+
+Student: What is polarization?
+
+Teacher: Polarization is the restriction of light vibrations to a single plane.
+
+Student: Why is polarization important?
+
+Teacher: It proves that light is a transverse wave because only transverse waves can be polarized.
+
+Student: Are there practical applications of polarization?
+
+Teacher: Yes. Polarized sunglasses reduce glare, and polarization is also used in cameras and LCD screens.
+
+Student: This topic seems very important for physics exams.
+
+Teacher: Absolutely. Questions from interference, diffraction, and polarization are commonly asked in board exams and competitive exams.
+
+Student: Thank you sir, the concepts are much clearer now.
+
+Teacher: You’re welcome. In the next class, we’ll solve numerical problems and derivations related to Wave Optics.

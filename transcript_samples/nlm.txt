@@ -1,0 +1,51 @@
+Teacher: Hi! Today we’ll learn about Newton’s Laws of Motion. These laws explain how objects move and why they move the way they do.
+
+Student: I’ve heard of them before, but I don’t really understand them.
+
+Teacher: That’s perfectly fine. Let’s start with the First Law of Motion, also called the Law of Inertia. It states that an object will remain at rest or continue moving with constant velocity unless acted upon by an external force.
+
+Student: What does inertia mean?
+
+Teacher: Inertia is the tendency of an object to resist changes in its state of motion. For example, a book lying on a table stays there unless someone pushes it.
+
+Student: So if I kick a football, it moves because of the force from my foot?
+
+Teacher: Exactly! And eventually it slows down because of friction and air resistance acting against it.
+
+Student: Got it. What is the Second Law?
+
+Teacher: Newton’s Second Law says that the force acting on an object is equal to the mass of the object multiplied by its acceleration.
+
+F = ma
+
+Student: What does acceleration mean here?
+
+Teacher: Acceleration means the rate of change of velocity. If you apply more force to an object, it accelerates more. But if the object has a larger mass, it accelerates less for the same force.
+
+Student: Can you give an example?
+
+Teacher: Sure. Pushing an empty shopping cart is easier than pushing a fully loaded one because the loaded cart has more mass.
+
+Student: That makes sense.
+
+Teacher: Now let’s discuss Newton’s Third Law of Motion. It states that for every action, there is an equal and opposite reaction.
+
+Student: Is that why rockets move upward?
+
+Teacher: Exactly. The rocket pushes gases downward, and the gases push the rocket upward with an equal and opposite force.
+
+Student: So forces always come in pairs?
+
+Teacher: Yes, action-reaction pairs always act on different objects.
+
+Student: I think I understand the laws better now.
+
+Teacher: Great! Let’s quickly revise:
+
+1. First Law — Objects resist changes in motion.
+2. Second Law — Force equals mass times acceleration.
+3. Third Law — Every action has an equal and opposite reaction.
+
+Student: Thanks! Can we solve numerical problems on this next time?
+
+Teacher: Absolutely. Next session we’ll practice problems using Newton’s Laws of Motion.
