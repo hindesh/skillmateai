@@ -20,3 +20,10 @@ out/
 # Data (sensitive / large)
 backend/data/test_transcript.txt
 PROJECT_CONTEXT.txt
+
+# Secrets / credentials
+backend/cloudrun-env.yaml
+users.txt
+
+# Writeups / local notes
+KAGGLE_WRITEUP.txt
