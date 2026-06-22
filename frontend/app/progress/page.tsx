@@ -19,7 +19,7 @@ import {
 interface ChartPoint { date: string; topic: string; score: number; total: number; percentage: number }
 interface ProgressData { chart_data: ChartPoint[]; feedback: string | null; total_attempts: number }
 
-const COLORS = ['#5890FE', '#7C5CFF', '#FF5DA2', '#10B981', '#FFB454', '#1FC8C8']
+const COLORS = ['#003E74', '#2E608F', '#147049', '#5A92BC', '#0B4A31', '#92B8D7']
 
 export default function ProgressPage() {
   const { profile, loading } = useUser()
@@ -82,17 +82,13 @@ export default function ProgressPage() {
       <main className="max-w-6xl mx-auto px-6 py-10">
 
         {/* Hero header */}
-        <section className="relative overflow-hidden rounded-4xl bg-mesh-blue p-8 md:p-10 mb-10 shadow-m3-3 animate-fade-up">
-          <div className="absolute inset-0 bg-grid opacity-20" aria-hidden />
-          <div className="blob top-[-4rem] right-[-3rem] w-72 h-72 bg-pink-400/30" />
-          <div className="blob bottom-[-6rem] left-[-3rem] w-80 h-80 bg-violet-400/30" style={{ animationDelay: '5s' }} />
-
+        <section className="relative overflow-hidden rounded-lg border border-slate-200 border-t-4 border-t-pink-500 bg-white p-8 md:p-10 mb-10 shadow-m3-2 animate-fade-up">
           <div className="relative">
-            <span className="chip-dark mb-3">Your learning journey</span>
-            <h1 className="font-display text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-1">
+            <span className="chip mb-3">Your learning journey</span>
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-1">
               Progress &amp; insights
             </h1>
-            <p className="text-white/75 text-sm md:text-base max-w-lg">
+            <p className="text-slate-600 text-sm md:text-base max-w-lg">
               Quiz performance across topics, and personalised feedback from Gemma 4.
             </p>
           </div>
@@ -102,32 +98,17 @@ export default function ProgressPage() {
           <div className="rounded-3xl border border-red-200 bg-red-50 p-4 mb-6 text-red-700 text-sm">{error}</div>
         )}
 
-        {/* Gemma 4 feedback card */}
+        {/* Feedback card */}
         {data?.feedback && (
-          <div className="relative overflow-hidden surface-dark p-1 mb-10 animate-fade-up">
-            <div className="rounded-[1.85rem] bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-7 md:p-8 text-white relative">
-              <div className="blob -top-16 -right-16 w-64 h-64 bg-violet-500/30" />
-              <div className="relative flex items-start gap-5">
-                <div className="shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center shadow-glow">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-indigo-300 mb-1">Gemma 4 Feedback</p>
-                  <p className="text-white/90 leading-relaxed text-base">{data.feedback}</p>
-                </div>
-              </div>
-            </div>
+          <div className="surface-card border-l-4 border-l-indigo-800 p-7 md:p-8 mb-10">
+            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-800 mb-2">Personalised feedback</p>
+            <p className="text-slate-700 leading-relaxed text-base">{data.feedback}</p>
           </div>
         )}
         {!data?.feedback && data && data.total_attempts < 2 && (
-          <div className="surface-card p-7 mb-10 text-center">
-            <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center mb-3">
-              <span className="text-xl">✨</span>
-            </div>
-            <p className="text-slate-700 font-semibold">AI feedback unlocks soon</p>
-            <p className="text-sm text-slate-500 mt-1">Complete at least 2 quizzes and Gemma 4 will write personalised feedback here.</p>
+          <div className="surface-card p-7 mb-10">
+            <p className="text-slate-800 font-semibold">Feedback not available yet</p>
+            <p className="text-sm text-slate-500 mt-1">Complete at least two quizzes and personalised feedback will appear here.</p>
           </div>
         )}
 
@@ -135,15 +116,14 @@ export default function ProgressPage() {
         {data && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             {[
-              { label: 'Total Attempts', value: data.total_attempts, tone: 'from-indigo-500 to-indigo-700' },
-              { label: 'Topics Covered', value: topics.length, tone: 'from-violet-500 to-indigo-600' },
-              { label: 'Avg Score', value: data.chart_data.length > 0 ? `${avgScore}%` : '—', tone: 'from-pink-500 to-violet-600' },
-              { label: 'Strongest', value: bestTopic ? `${bestTopic.avg}%` : '—', sub: bestTopic?.topic, tone: 'from-emerald-500 to-teal-500' },
+              { label: 'Total Attempts', value: data.total_attempts },
+              { label: 'Topics Covered', value: topics.length },
+              { label: 'Avg Score', value: data.chart_data.length > 0 ? `${avgScore}%` : '—' },
+              { label: 'Strongest', value: bestTopic ? `${bestTopic.avg}%` : '—', sub: bestTopic?.topic },
             ].map((stat) => (
-              <div key={stat.label} className="surface-raised p-6 relative overflow-hidden">
-                <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br ${stat.tone} opacity-10 blur-2xl`} />
+              <div key={stat.label} className="surface-raised p-6">
                 <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold">{stat.label}</p>
-                <p className={`font-display text-3xl md:text-4xl font-extrabold mt-2 bg-gradient-to-br ${stat.tone} bg-clip-text text-transparent`}>{stat.value}</p>
+                <p className="font-display text-3xl md:text-4xl font-bold mt-2 text-indigo-800">{stat.value}</p>
                 {stat.sub && <p className="text-xs text-slate-500 mt-1 truncate">{stat.sub}</p>}
               </div>
             ))}
@@ -193,8 +173,8 @@ export default function ProgressPage() {
           </div>
         ) : data && (
           <div className="surface-card p-14 text-center mb-8">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center mb-4">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7C5CFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="w-16 h-16 mx-auto rounded-3xl bg-indigo-50 flex items-center justify-center mb-4">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#003E74" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 3v18h18" /><path d="M7 14l4-4 4 4 5-5" />
               </svg>
             </div>

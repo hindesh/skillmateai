@@ -64,22 +64,22 @@ export default function TeacherProfilePage() {
   if (!teacher) return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-500">Teacher not found</p></div>
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar profile={profile} />
       <main className="max-w-3xl mx-auto px-6 py-10">
 
         {/* Header */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-7 mb-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-7 mb-6">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-3xl font-bold">
+              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-800 text-3xl font-bold">
                 {teacher.name[0]}
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">{teacher.name}</h1>
                 <div className="flex items-center gap-3 mt-1">
                   {teacher.price_per_hour && (
-                    <span className="text-indigo-600 font-semibold text-sm">${teacher.price_per_hour}/hr</span>
+                    <span className="text-indigo-800 font-semibold text-sm">${teacher.price_per_hour}/hr</span>
                   )}
                   {teacher.max_students && (
                     <span className="text-gray-500 text-sm">Up to {teacher.max_students} students</span>
@@ -90,9 +90,9 @@ export default function TeacherProfilePage() {
             {profile?.role === 'student' && (
               <div>
                 {requested ? (
-                  <span className="bg-green-50 text-green-700 border border-green-200 px-4 py-2 rounded-xl text-sm font-semibold">✓ Request Sent</span>
+                  <span className="bg-green-50 text-green-700 border border-green-200 px-4 py-2 rounded-md text-sm font-semibold">✓ Request Sent</span>
                 ) : (
-                  <button onClick={() => setShowRequest(true)} className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700">
+                  <button onClick={() => setShowRequest(true)} className="bg-indigo-800 text-white px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-indigo-900">
                     Request Session
                   </button>
                 )}
@@ -107,7 +107,7 @@ export default function TeacherProfilePage() {
           {teacher.expertise.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
               {teacher.expertise.map(e => (
-                <span key={e} className="text-sm bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">{e}</span>
+                <span key={e} className="text-sm bg-indigo-50 text-indigo-800 px-3 py-1 rounded-full">{e}</span>
               ))}
             </div>
           )}
@@ -123,7 +123,7 @@ export default function TeacherProfilePage() {
               {teacher.youtube_samples.map((sample, i) => {
                 const ytId = extractYouTubeId(sample.url)
                 return ytId ? (
-                  <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                  <div key={i} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <iframe
                       src={`https://www.youtube.com/embed/${ytId}`}
                       className="w-full aspect-video"
@@ -144,8 +144,7 @@ export default function TeacherProfilePage() {
         )}
 
         {teacher.youtube_samples.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-400">
-            <p className="text-4xl mb-3">🎥</p>
+          <div className="bg-white rounded-md border border-gray-200 p-8 text-center text-slate-500">
             <p>No teaching samples uploaded yet</p>
           </div>
         )}
@@ -154,7 +153,7 @@ export default function TeacherProfilePage() {
       {/* Request modal */}
       {showRequest && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl p-7 w-full max-w-md">
+          <div className="bg-white rounded-lg shadow-xl p-7 w-full max-w-md">
             <h2 className="text-lg font-bold mb-2">Request a Session</h2>
             <p className="text-sm text-gray-500 mb-5">Tell {teacher.name} what you need help with</p>
             <form onSubmit={sendRequest} className="space-y-4">
@@ -164,13 +163,13 @@ export default function TeacherProfilePage() {
                   required
                   value={topic}
                   onChange={e => setTopic(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200"
                   placeholder="e.g. Newton's Laws of Motion"
                 />
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowRequest(false)} className="flex-1 border border-gray-300 rounded-lg py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button>
-                <button type="submit" disabled={requesting} className="flex-1 bg-indigo-600 text-white rounded-lg py-2 text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50">
+                <button type="submit" disabled={requesting} className="flex-1 bg-indigo-800 text-white rounded-lg py-2 text-sm font-semibold hover:bg-indigo-900 disabled:opacity-50">
                   {requesting ? 'Sending...' : 'Send Request'}
                 </button>
               </div>

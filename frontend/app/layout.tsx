@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
+import { Inter, Source_Serif_4 } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -8,24 +8,25 @@ const inter = Inter({
   display: 'swap',
 })
 
-const jakarta = Plus_Jakarta_Sans({
+// Loaded but used sparingly — UI is primarily Inter
+const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
-  variable: '--font-display',
-  weight: ['500', '600', '700', '800'],
+  variable: '--font-serif',
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'SkillMateAI — Gemma 4 as your silent teaching partner',
+  title: 'SkillMateAI — Intelligent Teaching & Learning',
   description:
-    'AI-powered tutoring platform. Gemma 4 analyses live teaching sessions, scores understanding, and generates targeted quizzes — automatically.',
+    'An academic platform that analyses teaching sessions, assesses understanding, and produces tailored assessments to support every learner.',
   icons: { icon: '/icon.svg' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
-      <body className="font-sans antialiased bg-surface text-slate-900 min-h-screen selection:bg-indigo-200 selection:text-indigo-900">
+    <html lang="en" className={`${inter.variable} ${sourceSerif.variable}`}>
+      <body className="font-sans antialiased bg-surface text-slate-900 min-h-screen selection:bg-indigo-100 selection:text-indigo-900">
         {children}
       </body>
     </html>

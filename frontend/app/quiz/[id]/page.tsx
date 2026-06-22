@@ -91,40 +91,36 @@ function QuizContent() {
   if (pageLoading || loading) return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-500">Loading quiz...</p></div>
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar profile={profile} />
       <main className="max-w-2xl mx-auto px-6 py-10">
-        <Link href="/dashboard" className="text-sm text-indigo-600 hover:underline mb-6 block">← Dashboard</Link>
+        <Link href="/dashboard" className="text-sm text-indigo-800 hover:underline mb-6 block">← Dashboard</Link>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">📝</span>
-            <h1 className="text-xl font-bold text-gray-900">{sessionTopic}</h1>
-          </div>
-          <p className="text-sm text-gray-500">{questions.length} questions · Generated from session transcript</p>
+        <div className="surface-card border-t-4 border-t-indigo-800 p-5 mb-6">
+          <h1 className="text-xl font-bold text-gray-900">{sessionTopic}</h1>
+          <p className="text-sm text-gray-500 mt-1">{questions.length} questions · generated from the session transcript</p>
         </div>
 
         {error && <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6 text-red-700 text-sm">{error}</div>}
 
         {result && (
-          <div className={`rounded-xl p-6 mb-6 text-center border ${result.percentage >= 70 ? 'bg-green-50 border-green-300' : 'bg-orange-50 border-orange-300'}`}>
+          <div className={`rounded-md p-6 mb-6 text-center border ${result.percentage >= 70 ? 'bg-green-50 border-green-300' : 'bg-orange-50 border-orange-300'}`}>
             <p className={`text-5xl font-extrabold mb-2 ${result.percentage >= 70 ? 'text-green-600' : 'text-orange-500'}`}>{result.percentage}%</p>
             <p className="text-lg font-semibold text-gray-800">{result.score} / {result.total} correct</p>
             <p className={`text-sm mt-1 ${result.percentage >= 70 ? 'text-green-700' : 'text-orange-700'}`}>
-              {result.percentage >= 80 ? 'Excellent work!' : result.percentage >= 60 ? 'Good effort — keep practising!' : 'Review the explanations below.'}
+              {result.percentage >= 80 ? 'Strong result.' : result.percentage >= 60 ? 'A solid attempt — review the points below.' : 'Review the explanations below.'}
             </p>
             <div className="flex gap-3 justify-center mt-4">
-              <Link href="/progress" className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700">View Progress</Link>
+              <Link href="/progress" className="bg-indigo-800 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-900">View Progress</Link>
               <button onClick={() => { setResult(null); setAnswers({}) }} className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50">Retake</button>
             </div>
           </div>
         )}
 
         {questions.length === 0 && !error && (
-          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">
-            <p className="text-4xl mb-3">📭</p>
-            <p className="font-medium">No questions yet</p>
-            <p className="text-sm mt-1">Your teacher hasn't generated questions for this session yet.</p>
+          <div className="bg-white rounded-md border border-gray-200 p-12 text-center text-gray-400">
+            <p className="font-medium text-slate-600">No questions yet</p>
+            <p className="text-sm mt-1">Your teacher hasn&apos;t generated questions for this session yet.</p>
           </div>
         )}
 
@@ -133,7 +129,7 @@ function QuizContent() {
             const selected = answers[q.id]
             const res = result?.results.find(r => r.question_id === q.id)
             return (
-              <div key={q.id} className="bg-white rounded-xl border border-gray-200 p-5">
+              <div key={q.id} className="bg-white rounded-md border border-gray-200 p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-sm font-semibold text-gray-400">Q{idx + 1}</span>
                   <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{q.topic}</span>
@@ -152,7 +148,7 @@ function QuizContent() {
                       else if (isSelected) cls = 'border-red-400 bg-red-50 text-red-700 cursor-default'
                       else cls = 'border-gray-200 text-gray-400 cursor-default'
                     } else if (isSelected) {
-                      cls = 'border-indigo-500 bg-indigo-50 text-indigo-800 font-medium'
+                      cls = 'border-indigo-700 bg-indigo-50 text-indigo-800 font-medium'
                     }
                     return (
                       <div key={opt} onClick={() => selectAnswer(q.id, letter)} className={`border rounded-lg px-4 py-2.5 text-sm transition ${cls}`}>{opt}</div>
@@ -173,7 +169,7 @@ function QuizContent() {
           <div className="mt-6">
             <p className="text-sm text-gray-500 mb-3 text-center">{Object.keys(answers).length} / {questions.length} answered</p>
             <button onClick={submitQuiz} disabled={submitting || Object.keys(answers).length < questions.length}
-              className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50 transition">
+              className="w-full bg-indigo-800 text-white py-3 rounded-md font-semibold hover:bg-indigo-900 disabled:opacity-50 transition">
               {submitting ? 'Submitting...' : 'Submit Quiz'}
             </button>
           </div>

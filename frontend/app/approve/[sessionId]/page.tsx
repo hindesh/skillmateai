@@ -80,19 +80,19 @@ export default function ApprovePage() {
   const approvedCount = questions.filter((q) => q.status === 'approved').length
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar profile={profile} />
       <main className="max-w-3xl mx-auto px-6 py-10">
-        <Link href="/dashboard" className="text-sm text-indigo-600 hover:underline mb-6 block">← Back to Dashboard</Link>
+        <Link href="/dashboard" className="text-sm text-indigo-800 hover:underline mb-6 block">← Back to Dashboard</Link>
 
         {session && (
-          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-8">
+          <div className="bg-white rounded-md border border-gray-200 p-6 mb-8">
             <h1 className="text-xl font-bold text-gray-900 mb-4">Review Questions — {session.topic}</h1>
             {session.understanding_score !== null && (
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-indigo-50 rounded-lg p-4 text-center">
-                  <p className="text-3xl font-bold text-indigo-600">{session.understanding_score}/10</p>
-                  <p className="text-sm text-indigo-700 mt-1">Understanding Score</p>
+                  <p className="text-3xl font-bold text-indigo-800">{session.understanding_score}/10</p>
+                  <p className="text-sm text-indigo-800 mt-1">Understanding Score</p>
                 </div>
                 <div className="bg-orange-50 rounded-lg p-4">
                   <p className="text-xs font-semibold text-orange-700 mb-1">Weak Areas</p>
@@ -110,7 +110,7 @@ export default function ApprovePage() {
 
         <div className="space-y-5">
           {questions.map((q, idx) => (
-            <div key={q.id} className={`bg-white rounded-xl border p-5 transition ${q.status === 'approved' ? 'border-green-300' : q.status === 'rejected' ? 'border-red-200 opacity-60' : 'border-gray-200'}`}>
+            <div key={q.id} className={`bg-white rounded-md border p-5 transition ${q.status === 'approved' ? 'border-green-300' : q.status === 'rejected' ? 'border-red-200 opacity-60' : 'border-gray-200'}`}>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-gray-500">Q{idx + 1}</span>
@@ -145,7 +145,7 @@ export default function ApprovePage() {
 
         {questions.length === 0 && <p className="text-center text-gray-400 py-12">No questions generated for this session.</p>}
         {approvedCount > 0 && (
-          <div className="mt-8 p-4 bg-indigo-50 rounded-xl border border-indigo-200 text-center">
+          <div className="mt-8 p-4 bg-indigo-50 rounded-md border border-indigo-200 text-center">
             <p className="text-indigo-800 font-medium text-sm">{approvedCount} question{approvedCount !== 1 ? 's' : ''} approved and sent to the student.</p>
           </div>
         )}

@@ -147,19 +147,19 @@ export default function SessionPage() {
   const statusColor = (s: string) => ({
     scheduled: 'bg-blue-100 text-blue-700',
     completed: 'bg-gray-100 text-gray-600',
-    analysed: 'bg-indigo-100 text-indigo-700',
+    analysed: 'bg-indigo-100 text-indigo-800',
   }[s] || 'bg-gray-100 text-gray-600')
 
   if (pageLoading || loading) return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-500">Loading session...</p></div>
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar profile={profile} />
       <main className="max-w-3xl mx-auto px-6 py-10">
-        <Link href="/dashboard" className="text-sm text-indigo-600 hover:underline mb-6 block">← Dashboard</Link>
+        <Link href="/dashboard" className="text-sm text-indigo-800 hover:underline mb-6 block">← Dashboard</Link>
 
         {/* Session header */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3 mb-1">
@@ -173,13 +173,13 @@ export default function SessionPage() {
               )}
               {session?.scheduled_at && (
                 <p className="text-sm text-gray-500 mt-0.5">
-                  📅 {new Date(session.scheduled_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  {new Date(session.scheduled_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </p>
               )}
             </div>
             {session?.status === 'analysed' && profile?.role === 'student' && (
-              <Link href={`/quiz/${id}`} className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700">
-                Take Quiz →
+              <Link href={`/quiz/${id}`} className="btn-filled btn-sm">
+                Take quiz →
               </Link>
             )}
           </div>
@@ -189,32 +189,30 @@ export default function SessionPage() {
 
         {/* Generated success */}
         {generated && (
-          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-5 mb-6">
+          <div className="bg-indigo-50 border border-indigo-200 rounded-md p-5 mb-6">
             <p className="font-semibold text-indigo-800 mb-1">✓ {generated.questions_generated} Questions Generated</p>
-            <p className="text-sm text-indigo-700">Questions have been assigned to the student. They can now take the quiz.</p>
+            <p className="text-sm text-indigo-800">Questions have been assigned to the student. They can now take the quiz.</p>
             {session?.student_id && (
-              <p className="text-xs text-indigo-600 mt-2">The student will see a "Take Quiz" button on their dashboard.</p>
+              <p className="text-xs text-indigo-800 mt-2">The student will see a "Take Quiz" button on their dashboard.</p>
             )}
           </div>
         )}
 
         {/* Video call placeholder */}
-        <div className="bg-gray-900 rounded-2xl p-8 mb-6 text-center text-white">
-          <div className="text-5xl mb-4">🎥</div>
-          <h2 className="text-lg font-semibold mb-2">Video Call</h2>
-          <p className="text-gray-400 text-sm">Live video & real-time transcription — coming soon</p>
-          <p className="text-gray-500 text-xs mt-2">Use Zoom, Google Meet, or any video platform for now</p>
+        <div className="surface-card p-6 mb-6">
+          <h2 className="font-semibold text-slate-900 mb-1">Live video</h2>
+          <p className="text-sm text-slate-500">In-app video and real-time transcription are coming soon. For now, use Zoom, Google Meet, or any video platform to hold the session.</p>
         </div>
 
         {/* Recording link */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
           <h2 className="font-semibold text-gray-900 mb-4">Session Recording</h2>
           <div className="flex gap-3">
             <input
               value={recordingLink}
               onChange={e => setRecordingLink(e.target.value)}
               disabled={!isTeacher}
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50"
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 disabled:bg-gray-50"
               placeholder="Paste Zoom / Google Meet recording link here"
             />
             {isTeacher && (
@@ -225,14 +223,14 @@ export default function SessionPage() {
           </div>
           {session?.recording_link && (
             <a href={session.recording_link} target="_blank" rel="noopener noreferrer"
-              className="inline-block mt-3 text-sm text-indigo-600 hover:underline">
-              ▶ Watch Recording →
+              className="inline-block mt-3 text-sm text-indigo-800 hover:underline">
+              Watch recording →
             </a>
           )}
         </div>
 
         {/* Transcript */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="font-semibold text-gray-900">Session Transcript</h2>
@@ -253,9 +251,9 @@ export default function SessionPage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-xs border border-indigo-300 text-indigo-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 flex items-center gap-1.5"
+                  className="text-xs border border-indigo-300 text-indigo-800 px-3 py-1.5 rounded-lg hover:bg-indigo-50 flex items-center gap-1.5"
                 >
-                  📎 Upload .txt / .srt
+                  Upload .txt / .srt
                 </button>
                 <button onClick={saveSession} disabled={saving} className="text-xs border border-gray-300 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-50">
                   {saving ? 'Saving...' : 'Save'}
@@ -265,10 +263,9 @@ export default function SessionPage() {
           </div>
 
           {uploadedFileName && (
-            <div className="flex items-center gap-2 mb-3 text-xs text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
-              <span>📄</span>
+            <div className="flex items-center gap-2 mb-3 text-xs text-indigo-800 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
               <span className="font-medium">{uploadedFileName}</span>
-              <span className="text-indigo-400">— loaded into transcript</span>
+              <span className="text-slate-400">— loaded into transcript</span>
               <button
                 onClick={() => { setUploadedFileName(''); setTranscript('') }}
                 className="ml-auto text-indigo-400 hover:text-red-500"
@@ -281,21 +278,21 @@ export default function SessionPage() {
             onChange={e => { setTranscript(e.target.value); if (uploadedFileName) setUploadedFileName('') }}
             disabled={!isTeacher}
             rows={8}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-50 resize-none font-mono"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 disabled:bg-gray-50 resize-none font-mono"
             placeholder={isTeacher ? "Paste transcript here, or upload a .txt / .srt file above…" : 'No transcript uploaded yet'}
           />
         </div>
 
         {/* Teacher notes */}
         {isTeacher && (
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
             <h2 className="font-semibold text-gray-900 mb-1">Session Notes</h2>
             <p className="text-xs text-gray-500 mb-4">Private notes visible to the student after the session</p>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 resize-none"
               placeholder="Key takeaways, areas to review, homework..."
             />
             <button onClick={saveSession} disabled={saving} className="mt-3 text-sm border border-gray-300 text-gray-600 px-4 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-50">
@@ -306,68 +303,59 @@ export default function SessionPage() {
 
         {/* Student: see notes */}
         {!isTeacher && session?.session_notes && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
-            <h2 className="font-semibold text-gray-900 mb-2">📝 Teacher Notes</h2>
-            <p className="text-sm text-gray-700 leading-relaxed">{session.session_notes}</p>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+            <h2 className="font-semibold text-slate-900 mb-2">Teacher notes</h2>
+            <p className="text-sm text-slate-700 leading-relaxed">{session.session_notes}</p>
           </div>
         )}
 
         {/* Generate questions — teacher only */}
         {isTeacher && session?.status !== 'analysed' && (
-          <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-6">
-            <div className="flex items-start gap-4">
-              <div className="text-3xl">✨</div>
-              <div className="flex-1">
-                <h2 className="font-semibold text-indigo-900 mb-1">Generate Quiz Questions</h2>
-                <p className="text-sm text-indigo-700 mb-3">
-                  Paste the session transcript above and choose how to generate questions:
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button
-                    onClick={generateFromTranscript}
-                    disabled={generating || !transcript.trim()}
-                    className="flex-1 bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {generating ? (
-                      <><span className="animate-spin">⟳</span> Gemma is thinking...</>
-                    ) : (
-                      <>✨ Generate with Gemma 4 AI</>
-                    )}
-                  </button>
-                  <button
-                    onClick={generateQuestions}
-                    disabled={generating}
-                    className="flex-1 border border-indigo-300 text-indigo-700 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-indigo-100 disabled:opacity-50"
-                  >
-                    📋 Use Sample Questions
-                  </button>
-                </div>
-                <p className="text-xs text-indigo-500 mt-2">Powered by Gemma 4 (gemma-4-26b-a4b-it) via Google AI Studio API.</p>
-              </div>
+          <div className="surface-card border-l-4 border-l-indigo-800 p-6">
+            <h2 className="font-semibold text-slate-900 mb-1">Generate quiz questions</h2>
+            <p className="text-sm text-slate-600 mb-4">
+              Paste the session transcript above, then choose how to generate questions.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={generateFromTranscript}
+                disabled={generating || !transcript.trim()}
+                className="btn-filled flex-1"
+              >
+                {generating ? 'Generating…' : 'Generate with Gemma 4'}
+              </button>
+              <button
+                onClick={generateQuestions}
+                disabled={generating}
+                className="btn-outline flex-1"
+              >
+                Use sample questions
+              </button>
             </div>
+            <p className="text-xs text-slate-400 mt-3">Powered by Gemma 4 (gemma-4-26b-a4b-it) via Google AI Studio.</p>
           </div>
         )}
 
         {/* Already analysed */}
         {session?.status === 'analysed' && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
-            <h2 className="font-semibold text-green-800 mb-1">✓ Questions Generated</h2>
-            <p className="text-sm text-green-700">Quiz questions have been generated for this session.</p>
+          <div className="surface-card border-l-4 border-l-pink-600 p-6">
+            <h2 className="font-semibold text-slate-900 mb-1">Questions generated</h2>
+            <p className="text-sm text-slate-600">Quiz questions have been generated for this session.</p>
             {isTeacher && (
-              <div className="flex gap-2 mt-3">
+              <div className="flex gap-2 mt-4">
                 <button
                   onClick={generateFromTranscript}
                   disabled={generating || !transcript.trim()}
-                  className="text-sm border border-green-400 text-green-700 px-4 py-1.5 rounded-lg hover:bg-green-100 disabled:opacity-50"
+                  className="btn-outline btn-sm"
                 >
-                  {generating ? '⟳ Thinking...' : '✨ Regenerate with Gemma 4'}
+                  {generating ? 'Generating…' : 'Regenerate with Gemma 4'}
                 </button>
                 <button
                   onClick={generateQuestions}
                   disabled={generating}
-                  className="text-sm border border-gray-300 text-gray-600 px-4 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                  className="btn-ghost btn-sm border border-slate-300"
                 >
-                  📋 Use Sample Questions
+                  Use sample questions
                 </button>
               </div>
             )}

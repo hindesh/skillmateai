@@ -77,16 +77,23 @@ function AuthForm() {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 w-full max-w-md">
-      <Link href="/" className="text-2xl font-bold text-indigo-600 block mb-8">
-        SkillMateAI
+    <div className="bg-white rounded-md shadow-m3-2 border border-slate-200 p-8 w-full max-w-md border-t-4 border-t-pink-500">
+      <Link href="/" className="flex items-center gap-2.5 mb-8">
+        <svg width="30" height="32" viewBox="0 0 32 34" aria-hidden>
+          <path d="M16 1 L29 5 V16 C29 25 23 30 16 33 C9 30 3 25 3 16 V5 Z" fill="#003E74" stroke="#147049" strokeWidth="1.25" />
+          <path d="M16 11 C13.5 9.5 10.5 9.5 8.5 10.6 V21 C10.5 19.9 13.5 19.9 16 21.4 Z" fill="#ffffff" opacity="0.92" />
+          <path d="M16 11 C18.5 9.5 21.5 9.5 23.5 10.6 V21 C21.5 19.9 18.5 19.9 16 21.4 Z" fill="#147049" />
+        </svg>
+        <span className="font-display text-xl font-bold text-indigo-800">
+          SkillMate<span className="text-pink-700">AI</span>
+        </span>
       </Link>
 
-      <div className="flex rounded-lg border border-gray-200 mb-6 overflow-hidden">
+      <div className="flex rounded-md border border-gray-200 mb-6 overflow-hidden">
         {(['signup', 'signin'] as const).map((m) => (
           <button
             key={m}
-            className={`flex-1 py-2 text-sm font-medium transition ${mode === m ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+            className={`flex-1 py-2 text-sm font-medium transition ${mode === m ? 'bg-indigo-800 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
             onClick={() => setMode(m)}
           >
             {m === 'signup' ? 'Sign Up' : 'Sign In'}
@@ -104,7 +111,7 @@ function AuthForm() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200"
                 placeholder="Jane Smith"
               />
             </div>
@@ -117,9 +124,9 @@ function AuthForm() {
                     key={r}
                     type="button"
                     onClick={() => setRole(r)}
-                    className={`flex-1 py-2.5 rounded-lg border text-sm font-medium capitalize transition ${role === r ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-gray-300 text-gray-600 hover:border-indigo-400'}`}
+                    className={`flex-1 py-2.5 rounded-md border text-sm font-medium capitalize transition ${role === r ? 'bg-indigo-800 border-indigo-800 text-white' : 'border-gray-300 text-gray-600 hover:border-indigo-400'}`}
                   >
-                    {r === 'student' ? '🎓 Student' : '👨‍🏫 Teacher'}
+                    {r === 'student' ? 'Student' : 'Educator'}
                   </button>
                 ))}
               </div>
@@ -131,7 +138,7 @@ function AuthForm() {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 bg-white"
                 >
                   {GRADE_GROUPS.map((group) => (
                     <optgroup key={group.label} label={group.label}>
@@ -153,7 +160,7 @@ function AuthForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200"
             placeholder="you@example.com"
           />
         </div>
@@ -166,17 +173,17 @@ function AuthForm() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200"
             placeholder="Min 6 characters"
           />
         </div>
 
-        {error && <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</p>}
+        {error && <p className="text-red-600 text-sm bg-red-50 p-3 rounded-md">{error}</p>}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-indigo-700 disabled:opacity-50 transition"
+          className="w-full bg-indigo-800 text-white py-2.5 rounded-md font-semibold text-sm hover:bg-indigo-900 disabled:opacity-50 transition"
         >
           {loading ? 'Please wait...' : mode === 'signup' ? 'Create Account' : 'Sign In'}
         </button>
@@ -191,7 +198,7 @@ function AuthForm() {
 
 export default function AuthPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-surface-parchment flex items-center justify-center px-4 py-12">
       <Suspense fallback={<div className="text-gray-400 text-sm">Loading...</div>}>
         <AuthForm />
       </Suspense>

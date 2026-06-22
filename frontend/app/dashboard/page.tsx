@@ -162,7 +162,7 @@ export default function DashboardPage() {
   const statusStyle = (s: string) => ({
     scheduled: 'bg-blue-50 text-blue-700 border-blue-200',
     completed: 'bg-slate-50 text-slate-600 border-slate-200',
-    analysed:  'bg-gradient-to-r from-indigo-50 to-violet-50 text-indigo-700 border-indigo-200',
+    analysed:  'bg-indigo-50 text-indigo-700 border-indigo-200',
   }[s] || 'bg-slate-50 text-slate-600 border-slate-200')
 
   const extractYouTubeId = (url: string) => {
@@ -191,37 +191,27 @@ export default function DashboardPage() {
         <main className="max-w-6xl mx-auto px-6 py-10">
 
           {/* Hero discovery surface */}
-          <section className="relative overflow-hidden rounded-4xl bg-mesh-blue p-8 md:p-10 mb-10 shadow-m3-3 animate-fade-up">
-            <div className="absolute inset-0 bg-grid opacity-20" aria-hidden />
-            <div className="blob top-[-4rem] right-[-3rem] w-72 h-72 bg-pink-400/30" />
-            <div className="blob bottom-[-6rem] left-[-3rem] w-80 h-80 bg-violet-400/30" style={{ animationDelay: '5s' }} />
-
+          <section className="relative overflow-hidden rounded-lg border border-slate-200 border-t-4 border-t-pink-500 bg-white p-8 md:p-10 mb-10 shadow-m3-2 animate-fade-up">
             <div className="relative">
               <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
                 <div>
-                  <span className="chip-dark mb-3">
-                    <span className="relative inline-flex h-2 w-2">
-                      <span className="absolute inset-0 rounded-full bg-emerald-300 animate-ping" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-                    </span>
-                    Powered by Gemma 4
-                  </span>
-                  <h1 className="font-display text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">
-                    Find your perfect teacher
+                  <span className="chip mb-3">Educator directory</span>
+                  <h1 className="font-display text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-2">
+                    Find your teacher
                   </h1>
-                  <p className="text-white/75 text-sm md:text-base max-w-lg">
-                    Browse all educators or search by subject. Every match is curated for your grade level.
+                  <p className="text-slate-600 text-sm md:text-base max-w-lg">
+                    Browse educators or search by subject. Results are matched to your year group.
                   </p>
                 </div>
                 {profile?.grade_level && (
-                  <span className="chip-dark whitespace-nowrap">
-                    🎓 {profile.grade_level}
+                  <span className="chip whitespace-nowrap">
+                    {profile.grade_level}
                   </span>
                 )}
               </div>
 
               <div className="relative">
-                <svg className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.3-4.3" />
                 </svg>
@@ -229,7 +219,7 @@ export default function DashboardPage() {
                   value={query}
                   onChange={e => handleQueryChange(e.target.value)}
                   placeholder="Try “Physics”, “Calculus”, or a teacher’s name…"
-                  className="w-full bg-white/95 backdrop-blur text-slate-900 rounded-2xl pl-12 pr-12 py-4 text-base shadow-m3-2 focus:outline-none focus:ring-4 focus:ring-white/40 placeholder:text-slate-400"
+                  className="w-full border border-slate-300 bg-white text-slate-900 rounded-md pl-11 pr-12 py-3.5 text-base focus:outline-none focus:border-indigo-700 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-400"
                 />
                 {query && (
                   <button onClick={() => handleQueryChange('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full hover:bg-slate-100 transition">✕</button>
@@ -240,27 +230,27 @@ export default function DashboardPage() {
 
           {/* Quick links */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
-            <Link href="/progress" className="surface-raised p-5 hover:-translate-y-0.5 transition flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E61E8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="M7 14l4-4 4 4 5-5" /></svg>
+            <Link href="/progress" className="surface-raised p-5 hover:border-slate-300 transition-colors flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#003E74" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="M7 14l4-4 4 4 5-5" /></svg>
               </div>
               <div>
                 <p className="font-semibold text-sm text-slate-900">My Progress</p>
-                <p className="text-xs text-slate-500">Charts &amp; AI feedback</p>
+                <p className="text-xs text-slate-500">Charts &amp; feedback</p>
               </div>
             </Link>
-            <Link href="/self-study" className="surface-raised p-5 hover:-translate-y-0.5 transition flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-100 to-violet-200 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C5CFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
+            <Link href="/self-study" className="surface-raised p-5 hover:border-slate-300 transition-colors flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#003E74" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
               </div>
               <div>
                 <p className="font-semibold text-sm text-slate-900">Self-Study</p>
-                <p className="text-xs text-slate-500">Paste notes → quiz</p>
+                <p className="text-xs text-slate-500">Notes to questions</p>
               </div>
             </Link>
             <div className="surface-raised p-5 flex items-center gap-3 col-span-2 md:col-span-1">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5DA2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+              <div className="w-10 h-10 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#003E74" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
               </div>
               <div>
                 <p className="font-semibold text-sm text-slate-900">My Teachers</p>
@@ -311,8 +301,8 @@ export default function DashboardPage() {
                           title={firstSample?.title || 'Teaching sample'}
                         />
                       ) : (
-                        <div className="w-full aspect-video bg-gradient-to-br from-indigo-100 via-violet-100 to-pink-100 flex items-center justify-center">
-                          <div className="w-20 h-20 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-3xl font-display font-extrabold text-gradient">
+                        <div className="w-full aspect-video bg-slate-100 flex items-center justify-center">
+                          <div className="w-20 h-20 rounded-full bg-indigo-800 flex items-center justify-center text-3xl font-display font-bold text-white">
                             {t.name[0]}
                           </div>
                         </div>
@@ -358,7 +348,7 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {myEnrollments.map(e => e.teacher && (
                   <Link key={e.id} href={`/teachers/${e.teacher.id}`} className="surface-card p-5 hover:shadow-m3-2 hover:-translate-y-0.5 transition flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-display font-extrabold text-lg shadow-glow">
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-800 flex items-center justify-center text-white font-display font-extrabold text-lg">
                       {e.teacher.name[0]}
                     </div>
                     <div>
@@ -403,11 +393,11 @@ export default function DashboardPage() {
               <h2 className="font-display text-xl font-bold text-slate-900 mb-5">Pending Requests</h2>
               <div className="space-y-3">
                 {pendingMyRequests.map(r => (
-                  <div key={r.id} className="rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-5 flex items-center gap-3">
-                    <span className="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-lg">⏳</span>
+                  <div key={r.id} className="surface-card p-5 flex items-center gap-4">
+                    <span className="w-1 self-stretch rounded-full bg-amber-400" />
                     <div>
                       <p className="font-semibold text-slate-900">{r.topic}</p>
-                      <p className="text-sm text-slate-600">To: <span className="font-medium">{r.teacher?.name}</span> · <span className="text-amber-700">Awaiting response</span></p>
+                      <p className="text-sm text-slate-600">To <span className="font-medium">{r.teacher?.name}</span> · <span className="text-amber-700">awaiting response</span></p>
                     </div>
                   </div>
                 ))}
@@ -428,26 +418,22 @@ export default function DashboardPage() {
       <main className="max-w-6xl mx-auto px-6 py-10">
 
         {/* Hero greeting */}
-        <section className="relative overflow-hidden rounded-4xl bg-mesh-blue p-8 md:p-10 mb-10 shadow-m3-3 animate-fade-up">
-          <div className="absolute inset-0 bg-grid opacity-20" aria-hidden />
-          <div className="blob top-[-4rem] right-[-3rem] w-72 h-72 bg-pink-400/30" />
-          <div className="blob bottom-[-6rem] left-[-3rem] w-80 h-80 bg-violet-400/30" style={{ animationDelay: '5s' }} />
-
+        <section className="relative overflow-hidden rounded-lg border border-slate-200 border-t-4 border-t-pink-500 bg-white p-8 md:p-10 mb-10 shadow-m3-2 animate-fade-up">
           <div className="relative flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <span className="chip-dark mb-3">Teacher dashboard</span>
-              <h1 className="font-display text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-1">
+              <span className="chip mb-3">Teacher dashboard</span>
+              <h1 className="font-display text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-1">
                 Welcome back, {profile?.name?.split(' ')[0]}
               </h1>
-              <p className="text-white/75 text-sm md:text-base">
+              <p className="text-slate-600 text-sm md:text-base">
                 Your students, sessions, and AI-powered insights — all in one place.
               </p>
             </div>
             <div className="flex gap-2 flex-wrap">
-              <Link href="/setup" className="rounded-full bg-white/15 border border-white/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/25 transition">
+              <Link href="/setup" className="btn-outline btn-sm">
                 Edit Profile
               </Link>
-              <button onClick={() => setShowNewSession(true)} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50 transition shadow-m3-2">
+              <button onClick={() => setShowNewSession(true)} className="btn-filled btn-sm">
                 + Schedule Session
               </button>
             </div>
@@ -456,16 +442,13 @@ export default function DashboardPage() {
 
         {/* Profile setup banner */}
         {teacherIsPublic === false && (
-          <div className="rounded-3xl border border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 p-5 mb-8 flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-4">
-              <span className="w-11 h-11 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-xl shrink-0">⚠️</span>
-              <div>
-                <p className="font-semibold text-amber-900">Your profile is not visible to students yet</p>
-                <p className="text-sm text-amber-700 mt-0.5">Complete your teacher profile so students can discover and request sessions with you.</p>
-              </div>
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 mb-8 flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="font-semibold text-amber-900">Your profile is not visible to students yet</p>
+              <p className="text-sm text-amber-800 mt-0.5">Complete your teacher profile so students can discover and request sessions with you.</p>
             </div>
-            <Link href="/setup" className="shrink-0 rounded-full bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 text-sm font-semibold shadow-m3-1 transition">
-              Set Up Profile →
+            <Link href="/setup" className="shrink-0 rounded-md bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 text-sm font-semibold transition-colors">
+              Set up profile
             </Link>
           </div>
         )}
@@ -473,14 +456,13 @@ export default function DashboardPage() {
         {/* KPI stats */}
         <div className="grid grid-cols-3 gap-4 mb-10">
           {[
-            { label: 'Students', value: enrollments.length, tone: 'from-indigo-500 to-indigo-700' },
-            { label: 'Pending Requests', value: pendingIncoming.length, tone: 'from-violet-500 to-indigo-600' },
-            { label: 'Sessions', value: sessions.length, tone: 'from-pink-500 to-violet-600' },
+            { label: 'Students', value: enrollments.length },
+            { label: 'Pending Requests', value: pendingIncoming.length },
+            { label: 'Sessions', value: sessions.length },
           ].map(stat => (
-            <div key={stat.label} className="surface-raised p-6 relative overflow-hidden">
-              <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br ${stat.tone} opacity-10 blur-2xl`} />
+            <div key={stat.label} className="surface-raised p-6">
               <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold">{stat.label}</p>
-              <p className={`font-display text-4xl md:text-5xl font-extrabold mt-2 bg-gradient-to-br ${stat.tone} bg-clip-text text-transparent`}>{stat.value}</p>
+              <p className="font-display text-4xl md:text-5xl font-bold mt-2 text-indigo-800">{stat.value}</p>
             </div>
           ))}
         </div>
@@ -493,7 +475,7 @@ export default function DashboardPage() {
               {pendingIncoming.map(r => (
                 <div key={r.id} className="surface-card p-5 flex items-center justify-between gap-4 flex-wrap">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-display font-extrabold shadow-glow">
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-800 flex items-center justify-center text-white font-display font-extrabold">
                       {r.student?.name?.[0]}
                     </div>
                     <div>
@@ -528,7 +510,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {enrollments.map(e => e.student && (
                 <div key={e.id} className="surface-card p-5 flex items-center gap-3">
-                  <div className="w-11 h-11 shrink-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-display font-extrabold shadow-glow">
+                  <div className="w-11 h-11 shrink-0 rounded-2xl bg-indigo-800 flex items-center justify-center text-white font-display font-extrabold">
                     {e.student.name[0]}
                   </div>
                   <div className="min-w-0">
@@ -546,8 +528,8 @@ export default function DashboardPage() {
           <h2 className="font-display text-xl font-bold text-slate-900 mb-5">Sessions</h2>
           {sessions.length === 0 ? (
             <div className="surface-card p-14 text-center">
-              <div className="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center mb-4">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7C5CFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <div className="w-16 h-16 mx-auto rounded-3xl bg-indigo-50 flex items-center justify-center mb-4">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#003E74" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="4" width="18" height="18" rx="3" /><path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
               </div>

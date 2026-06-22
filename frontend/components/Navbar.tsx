@@ -35,59 +35,57 @@ export default function Navbar({ profile }: NavbarProps) {
   const initial = (profile?.name?.[0] || '?').toUpperCase()
 
   return (
-    <header className="sticky top-0 z-40 px-4 pt-4">
-      <nav className="mx-auto max-w-6xl flex items-center justify-between gap-4 rounded-full border border-slate-200/70 bg-white/80 px-3 py-2 shadow-m3-1 backdrop-blur-xl">
-        {/* Brand */}
-        <Link href="/dashboard" className="flex items-center gap-2.5 pl-2 group">
-          <span className="relative inline-flex">
-            <span className="absolute inset-0 rounded-full bg-indigo-400/40 blur-md group-hover:bg-indigo-400/60 transition" aria-hidden />
-            <svg width="30" height="30" viewBox="0 0 32 32" className="relative">
-              <defs>
-                <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#5890FE" />
-                  <stop offset="100%" stopColor="#7C5CFF" />
-                </linearGradient>
-              </defs>
-              <circle cx="16" cy="16" r="16" fill="url(#logo-grad)" />
-              <polyline
-                points="8,17 13,22 24,10"
-                stroke="white"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            </svg>
-          </span>
-          <span className="font-display text-lg font-bold text-slate-900 tracking-tight">
-            SkillMate<span className="text-gradient">AI</span>
+    <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
+      {/* Institutional utility strip */}
+      <div className="bg-indigo-800 text-white/80">
+        <div className="mx-auto max-w-6xl px-6 h-8 flex items-center justify-between text-[11px] tracking-wide">
+          <span className="uppercase tracking-[0.18em] text-white/70">SkillMateAI · Teaching &amp; Learning</span>
+          <span className="hidden sm:inline capitalize text-white/70">{profile?.role} portal</span>
+        </div>
+      </div>
+
+      {/* Main header row */}
+      <nav className="mx-auto max-w-6xl flex items-center justify-between gap-4 px-6 h-[68px]">
+        {/* Brand / crest */}
+        <Link href="/dashboard" className="flex items-center gap-3 group">
+          <Crest />
+          <span className="leading-none">
+            <span className="block font-display text-lg font-bold text-indigo-800 tracking-tight">
+              SkillMate<span className="text-pink-700">AI</span>
+            </span>
+            <span className="block text-[10px] uppercase tracking-[0.22em] text-slate-400 mt-0.5">
+              Teaching &amp; Learning
+            </span>
           </span>
         </Link>
 
         {/* Nav links */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-1 h-full">
           {links.map((l) => {
             const active = pathname === l.href || pathname?.startsWith(l.href + '/')
             return (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                className={`relative flex items-center h-full px-4 text-sm font-medium transition-colors ${
                   active
-                    ? 'bg-indigo-600 text-white shadow-m3-1'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    ? 'text-indigo-800'
+                    : 'text-slate-600 hover:text-indigo-800'
                 }`}
               >
                 {l.label}
+                {active && (
+                  <span className="absolute bottom-0 left-3 right-3 h-[3px] bg-pink-500 rounded-t" aria-hidden />
+                )}
               </Link>
             )
           })}
         </div>
 
         {/* Profile + sign out */}
-        <div className="flex items-center gap-2 pr-1">
-          <div className="hidden sm:flex items-center gap-2.5 rounded-full bg-slate-50 border border-slate-200/60 pl-1 pr-3 py-1">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-indigo-800 flex items-center justify-center text-white text-xs font-bold">
               {initial}
             </div>
             <div className="leading-tight">
@@ -97,7 +95,7 @@ export default function Navbar({ profile }: NavbarProps) {
           </div>
           <button
             onClick={signOut}
-            className="rounded-full px-3 py-2 text-xs font-medium text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
             title="Sign out"
           >
             Sign out
@@ -105,5 +103,24 @@ export default function Navbar({ profile }: NavbarProps) {
         </div>
       </nav>
     </header>
+  )
+}
+
+function Crest() {
+  return (
+    <span className="relative inline-flex">
+      <svg width="34" height="34" viewBox="0 0 32 34" className="drop-shadow-sm">
+        {/* Shield */}
+        <path
+          d="M16 1 L29 5 V16 C29 25 23 30 16 33 C9 30 3 25 3 16 V5 Z"
+          fill="#003E74"
+          stroke="#147049"
+          strokeWidth="1.25"
+        />
+        {/* Open book motif */}
+        <path d="M16 11 C13.5 9.5 10.5 9.5 8.5 10.6 V21 C10.5 19.9 13.5 19.9 16 21.4 Z" fill="#ffffff" opacity="0.92" />
+        <path d="M16 11 C18.5 9.5 21.5 9.5 23.5 10.6 V21 C21.5 19.9 18.5 19.9 16 21.4 Z" fill="#147049" />
+      </svg>
+    </span>
   )
 }
